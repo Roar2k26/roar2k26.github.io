@@ -325,14 +325,16 @@
   @media(max-width:600px){
     /* Splash screen mobile fix */
     .splash{padding:20px;box-sizing:border-box}
-    .splash-roar{font-size:clamp(32px,10vw,60px);letter-spacing:3px}
+    .splash-roar{font-size:clamp(32px,10vw,60px);letter-spacing:3px;word-break:keep-all;white-space:nowrap}
     @keyframes splashRoarSplit{
       0%{opacity:1;transform:scale(1);letter-spacing:3px}
-      50%{opacity:.6;transform:scale(1.05);letter-spacing:15px}
-      100%{opacity:0;transform:scale(1.1);letter-spacing:30px}
+      50%{opacity:.6;transform:scale(1.02);letter-spacing:10px}
+      100%{opacity:0;transform:scale(1.05);letter-spacing:18px}
     }
-    .splash-collab{font-size:clamp(20px,7vw,40px);letter-spacing:2px}
-    .splash-sub{margin-top:60px;font-size:12px;letter-spacing:1.5px}
+    .splash-collab{font-size:clamp(20px,7vw,40px);letter-spacing:2px;position:relative}
+    .splash-collab .sp-ngit{transform:translateX(-40px)}
+    .splash-collab .sp-kmec{transform:translateX(40px)}
+    .splash-sub{margin-top:24px;font-size:12px;letter-spacing:1.5px}
     .splash-enter{font-size:13px;letter-spacing:3px;padding:12px 32px}
     .splash-glow{width:200px;height:200px}
 
@@ -431,29 +433,71 @@
     /* Footer */
     footer{font-size:12px;padding:32px 14px 48px}
 
+    /* Payment timer */
+    .pay-timer{padding:8px 10px;font-size:11px;gap:4px;letter-spacing:.5px;flex-wrap:wrap;justify-content:center}
+    .pay-timer b{font-size:14px;min-width:42px}
+
+    /* Pay note (UPI ID) — prevent overflow */
+    .pay-note{font-size:12px;word-break:break-all;padding:0 4px}
+
+    /* Radio buttons (4 options) — 2-col grid on mobile */
+    fieldset .radio{display:inline-flex;width:calc(50% - 6px)}
+    fieldset{display:flex;flex-wrap:wrap;gap:6px}
+
+    /* Upload area */
+    .upload{padding:16px 10px}
+    .upload label{font-size:13px;min-height:56px;display:flex;align-items:center;justify-content:center;border:2px dashed var(--line);border-radius:10px;padding:16px;text-align:center;cursor:pointer}
+
+    /* Text overflow protection */
+    .receipt .row span:last-child{word-break:break-all;overflow-wrap:anywhere}
+    .step-card p{word-break:break-word;overflow-wrap:anywhere}
+    #utrInput{font-size:16px}
+
     /* Music FAB */
     .music-fab{bottom:14px;right:14px;width:44px;height:44px;font-size:18px}
   }
 
   /* Small phones (≤380px) */
   @media(max-width:380px){
-    .splash-roar{font-size:clamp(26px,9vw,40px);letter-spacing:2px}
-    .splash-collab{font-size:clamp(16px,6vw,28px);letter-spacing:1px}
-    .splash-sub{margin-top:50px;font-size:11px}
-    .splash-enter{font-size:12px;padding:10px 28px;letter-spacing:2px}
+    .splash-roar{font-size:clamp(24px,9vw,36px);letter-spacing:2px}
+    @keyframes splashRoarSplit{
+      0%{opacity:1;transform:scale(1);letter-spacing:2px}
+      50%{opacity:.6;transform:scale(1.02);letter-spacing:6px}
+      100%{opacity:0;transform:scale(1.03);letter-spacing:10px}
+    }
+    .splash-collab{font-size:clamp(14px,5.5vw,24px);letter-spacing:1px}
+    .splash-collab .sp-ngit{transform:translateX(-30px)}
+    .splash-collab .sp-kmec{transform:translateX(30px)}
+    .splash-collab .sp-x{margin:0 4px}
+    .splash-sub{margin-top:20px;font-size:10px}
+    .splash-enter{font-size:11px;padding:10px 24px;letter-spacing:2px}
     .wrap{padding:0 10px}
     .title{font-size:clamp(24px,8vw,36px)}
     .step-card{padding:14px 10px;margin:0 2px}
     .countdown .box{padding:10px 2px}
     .countdown .box span:first-child{font-size:20px}
-    .qr-wrap img{width:200px;height:200px}
-    .upi-apps{grid-template-columns:repeat(2,1fr)}
+    .qr-wrap img{width:180px;height:180px}
+    .upi-apps{grid-template-columns:repeat(2,1fr);gap:6px}
+    .upi-app{padding:8px 4px;font-size:9px;min-height:56px}
+    .upi-app svg,.upi-app img,.upi-app .app-icon{width:26px;height:26px}
     .coords{grid-template-columns:1fr}
     .receipt .row{flex-direction:column;gap:2px}
     .receipt .row span:first-child{min-width:0}
     .btn{font-size:12px;padding:12px 14px}
     nav .wrap{height:50px}
     .brand{font-size:15px}
+    /* Radio buttons stack on tiny screens */
+    fieldset .radio{width:100%}
+    /* Timer compact */
+    .pay-timer{font-size:10px;padding:6px 8px}
+    .pay-timer b{font-size:13px}
+    /* Pay note */
+    .pay-note{font-size:11px}
+    .pay-note b{font-size:11px}
+    /* Hero actions */
+    .hero-actions .btn{font-size:12px;padding:12px 16px;min-height:46px}
+    /* Section headings */
+    h2{font-size:clamp(18px,6vw,24px)}
   }
 
   /* Touch-friendly: ensure all interactive elements are at least 44px */
@@ -484,6 +528,18 @@
   @supports(min-height:100dvh){
     .hero{min-height:80dvh}
   }
+  /* TOAST NOTIFICATION (replaces alert()) */
+  .toast{position:fixed;top:0;left:0;right:0;z-index:10000;transform:translateY(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none}
+  .toast.show{transform:translateY(0);pointer-events:auto}
+  .toast-inner{margin:env(safe-area-inset-top,8px) 12px 0;padding:14px 18px;border-radius:0 0 14px 14px;font-family:Poppins,sans-serif;font-size:14px;line-height:1.5;color:#fff;display:flex;align-items:flex-start;gap:10px;backdrop-filter:blur(12px);box-shadow:0 4px 24px rgba(0,0,0,.5)}
+  .toast.error .toast-inner{background:rgba(255,59,78,.95);border:1px solid rgba(255,59,78,.5)}
+  .toast.warn .toast-inner{background:rgba(255,179,71,.95);border:1px solid rgba(255,179,71,.5);color:#000}
+  .toast.success .toast-inner{background:rgba(61,220,151,.95);border:1px solid rgba(61,220,151,.5);color:#000}
+  .toast-close{background:none;border:none;color:inherit;font-size:20px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;opacity:.7}
+  .toast-close:hover{opacity:1}
+  .toast-msg{flex:1}
+  @media(max-width:600px){.toast-inner{font-size:13px;padding:12px 14px;margin:env(safe-area-inset-top,4px) 6px 0;border-radius:0 0 12px 12px}}
+
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   @media print{
     *{color:#000!important;text-shadow:none!important;box-shadow:none!important}
@@ -507,6 +563,9 @@
 <body>
 
 <!-- SPLASH SCREEN (tap to enter + start music) -->
+<!-- Toast notification -->
+<div class="toast" id="toast"><div class="toast-inner"><span class="toast-msg" id="toastMsg"></span><button class="toast-close" id="toastClose" aria-label="Close">✕</button></div></div>
+
 <div class="splash" id="splash">
   <div class="splash-glow"></div>
   <div class="splash-roar" id="splashRoar">ROAR<span class="s-red">2K</span><span class="s-green">26</span></div>
@@ -848,7 +907,7 @@
       <div class="upload">
         <strong style="font-size:14px">Upload your payment screenshot</strong>
         <p class="pay-note" style="font-size:12px;margin:4px 0 8px">UTR number will be auto-extracted from your screenshot</p>
-        <input type="file" id="shot" accept="image/*">
+        <input type="file" id="shot" accept="image/png,image/jpeg,image/jpg,image/webp" capture="environment">
         <img id="preview" class="hidden" alt="Payment screenshot preview">
       </div>
       <div class="btn-row" style="margin-top:18px">
@@ -906,6 +965,26 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════
+   TOAST NOTIFICATION — replaces alert() for mobile UX
+   ═══════════════════════════════════════════════════════ */
+let _toastTimer = null;
+function showToast(msg, type) {
+  type = type || "error";
+  const t = document.getElementById("toast");
+  const m = document.getElementById("toastMsg");
+  if (!t || !m) return;
+  clearTimeout(_toastTimer);
+  t.className = "toast " + type;
+  m.textContent = msg;
+  requestAnimationFrame(() => { t.classList.add("show"); });
+  _toastTimer = setTimeout(() => { t.classList.remove("show"); }, 5000);
+}
+document.getElementById("toastClose").addEventListener("click", () => {
+  clearTimeout(_toastTimer);
+  document.getElementById("toast").classList.remove("show");
+});
+
+/* ═══════════════════════════════════════════════════════
    SPLASH SCREEN — CSS handles phase 1 (ROAR2K26 in).
    JS triggers phase 2 (split → NGIT X KMEC conjoin)
    and handles the TAP TO ENTER dismiss.
@@ -955,7 +1034,7 @@
    CONFIG (frozen to prevent tampering via console)
    ═══════════════════════════════════════════════════════ */
 const CONFIG = Object.freeze({
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbys3QcQSSiy_l_N6Jxx7mVL-g2NMi20vXdbqHfGbPk2GicDuQ7h16Z5aXFcl_dm5NBm/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwoWU76a4R_UXxIcmqRvfuAqGLb8oZ9YQF-dz7f7PKn9H3rooEyJiSmUTWGWeF107I0/exec",
   UPI_ID: "9502614934-2@axl",         // UPI ID
   PAYEE_NAME: "Amith Vaivasvath Chitturi",
   TICKET_PRICE: 1300,                 // per pass, INR (set your real price)
@@ -1070,26 +1149,37 @@ function validateScreenshot(file) {
    SECURITY LAYER 6: Disable dev tools data leaking
    ═══════════════════════════════════════════════════════ */
 (function() {
-  // Suppress sensitive data from being logged in production
-  const origLog = console.log;
-  console.log = function() {
-    const args = Array.from(arguments);
-    // Filter out any base64 image data or email addresses from logs
-    const filtered = args.map(a => {
-      if (typeof a === "string" && a.length > 1000) return "[large data redacted]";
-      return a;
-    });
-    origLog.apply(console, filtered);
-  };
+  // PRODUCTION MODE: suppress ALL console output to prevent data leakage
+  const noop = function(){};
+  console.log = noop;
+  console.warn = noop;
+  console.error = noop;
+  console.info = noop;
+  console.debug = noop;
+  console.table = noop;
+  console.dir = noop;
+  console.trace = noop;
 
   // Prevent drag-and-drop data exfiltration
   document.addEventListener("dragstart", e => e.preventDefault());
 
-  // Block right-click on sensitive form areas only
+  // Block right-click on sensitive areas (payment, receipt, forms)
   document.addEventListener("contextmenu", e => {
-    if (e.target.closest("#stepPay, #stepReceipt, .receipt")) {
+    if (e.target.closest("#stepPay, #stepReceipt, .receipt, #stepDetails, #stepTerms")) {
       e.preventDefault();
     }
+  });
+
+  // Block view-source keyboard shortcuts
+  document.addEventListener("keydown", e => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === "u" || e.key === "U")) e.preventDefault();
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "i" || e.key === "I" || e.key === "j" || e.key === "J" || e.key === "c" || e.key === "C")) e.preventDefault();
+    if (e.key === "F12") e.preventDefault();
+  });
+
+  // Block text selection on sensitive data (UPI ID, payee info)
+  document.addEventListener("selectstart", e => {
+    if (e.target.closest(".pay-note, .receipt")) e.preventDefault();
   });
 })();
 
@@ -1145,17 +1235,17 @@ document.getElementById("detailsForm").addEventListener("submit", e => {
   const f = Object.fromEntries(new FormData(e.target));
 
   // ── STRICT INPUT VALIDATION ──
-  if (!validateName(f.name)) { alert("Please enter a valid name (2-100 characters, no special markup)."); return; }
-  if (!validateEmail(f.email)) { alert("Please enter a valid email address."); return; }
-  if (!validateName(f.college)) { alert("Please enter a valid college name."); return; }
-  if (!f.branch || f.branch.trim().length < 1 || f.branch.trim().length > 100) { alert("Please enter your branch."); return; }
-  if (!validateRoll(f.roll)) { alert("Please enter a valid roll number (alphanumeric, 3-30 characters)."); return; }
-  if (!f.mode) { alert("Please select a payment mode."); return; }
-  if (!f.age) { alert("Please confirm you are 18+ and consent to sharing details."); return; }
+  if (!validateName(f.name)) { showToast("Please enter a valid name (2-100 characters, no special markup)."); return; }
+  if (!validateEmail(f.email)) { showToast("Please enter a valid email address."); return; }
+  if (!validateName(f.college)) { showToast("Please enter a valid college name."); return; }
+  if (!f.branch || f.branch.trim().length < 1 || f.branch.trim().length > 100) { showToast("Please enter your branch."); return; }
+  if (!validateRoll(f.roll)) { showToast("Please enter a valid roll number (alphanumeric, 3-30 characters)."); return; }
+  if (!f.mode) { showToast("Please select a payment app."); return; }
+  if (!f.age) { showToast("Please confirm you are 18+ and consent to sharing details."); return; }
 
   // Rate limit
   if (!RateLimit("booking", CONFIG.RATE_LIMIT_MAX, CONFIG.RATE_LIMIT_WINDOW)) {
-    alert("Too many booking attempts. Please wait a few minutes and try again.");
+    showToast("Too many booking attempts. Please wait a few minutes and try again.", "warn");
     return;
   }
 
@@ -1287,7 +1377,7 @@ shotInput.addEventListener("change", e => {
 
   // Validate file before processing
   const check = validateScreenshot(file);
-  if (!check.valid) { alert(check.reason); shotInput.value = ""; return; }
+  if (!check.valid) { showToast(check.reason); shotInput.value = ""; return; }
 
   // Verify magic bytes (JPEG: FF D8 FF, PNG: 89 50 4E 47)
   const headerReader = new FileReader();
@@ -1297,7 +1387,7 @@ shotInput.addEventListener("change", e => {
     const isPNG = arr[0] === 0x89 && arr[1] === 0x50 && arr[2] === 0x4E && arr[3] === 0x47;
     const isWEBP = arr[0] === 0x52 && arr[1] === 0x49 && arr[2] === 0x46 && arr[3] === 0x46;
     if (!isJPEG && !isPNG && !isWEBP) {
-      alert("Invalid image file. The file does not appear to be a genuine image.");
+      showToast("Invalid image file. The file does not appear to be a genuine image.");
       shotInput.value = ""; return;
     }
     processImage(file);
@@ -1352,7 +1442,7 @@ async function runOCR(imageSrc) {
       ocrStatusEl.innerHTML = '⚠️ Could not find UTR in screenshot — please enter it manually';
     }
   } catch (err) {
-    console.warn("OCR failed:", err);
+    /* OCR error suppressed */
     ocrStatusEl.className = "ocr-status fail";
     ocrStatusEl.innerHTML = '⚠️ Auto-read failed — please enter UTR manually';
   }
@@ -1364,26 +1454,26 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   const rawUtr = document.getElementById("utrInput").value.trim();
   const utrVal = sanitizeUTR(rawUtr);
   if (!utrVal || utrVal.length < 6) {
-    alert("Please enter a valid UPI Transaction / UTR number (at least 6 alphanumeric characters).");
+    showToast("Please enter a valid UPI Transaction / UTR number (at least 6 alphanumeric characters).");
     return;
   }
-  if (!shotData) { alert("Please upload your payment screenshot first."); return; }
+  if (!shotData) { showToast("Please upload your payment screenshot first."); return; }
 
   // ── RATE LIMIT ──
   if (!RateLimit("submit", CONFIG.RATE_LIMIT_MAX, CONFIG.RATE_LIMIT_WINDOW)) {
-    alert("Too many submissions. Please wait a few minutes and try again.");
+    showToast("Too many submissions. Please wait a few minutes and try again.", "warn");
     return;
   }
 
   // ── SCREENSHOT SIZE CHECK ──
   if (shotData.length > CONFIG.MAX_SCREENSHOT_BYTES) {
-    alert("Screenshot is too large. Please upload a smaller image.");
+    showToast("Screenshot is too large. Please upload a smaller image.");
     return;
   }
 
   // ── VERIFY ORDER INTEGRITY (amount wasn't tampered) ──
   if (order.amount !== CONFIG.TICKET_PRICE.toFixed(2)) {
-    alert("Payment amount mismatch detected. Please refresh the page and try again.");
+    showToast("Payment amount mismatch detected. Please refresh the page and try again.");
     return;
   }
 
@@ -1415,19 +1505,19 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     try {
       const j = await resp.json();
       if (!j.ok && j.error === "duplicate_utr") {
-        alert("⚠️ Duplicate UTR detected!\n\n" + j.message + "\n\nPlease check your transaction ID and try again with the correct one.");
+        showToast("Duplicate UTR detected! " + j.message + " Please check your transaction ID and try again.");
         btn.disabled = false; btn.textContent = "SUBMIT PAYMENT SCREENSHOT";
         return;
       }
       if (!j.ok && j.error) {
-        alert("⚠️ Submission rejected: " + (j.message || "Unknown error. Please try again."));
+        showToast("Submission rejected: " + (j.message || "Unknown error. Please try again."));
         btn.disabled = false; btn.textContent = "SUBMIT PAYMENT SCREENSHOT";
         return;
       }
       verified = !!j.verified;
     } catch(_){}
   } catch (err) {
-    console.warn("Submit fetch issue:", err);
+    /* Submit error suppressed */
   }
   showReceipt(verified);
 });
