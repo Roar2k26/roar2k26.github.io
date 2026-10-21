@@ -27,36 +27,88 @@
   }
 
   /* SPLASH SCREEN */
-  .splash{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;overflow:hidden}
+  .splash{position:fixed;top:0;left:0;width:100%;height:100%;height:100dvh;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;overflow:hidden;padding:20px;box-sizing:border-box}
   .splash.hide{animation:splashFadeOut .8s ease forwards}
   @keyframes splashFadeOut{to{opacity:0;visibility:hidden}}
-  /* ROAR2K26 title — splits apart */
-  .splash-roar{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(44px,12vw,100px);color:var(--text);letter-spacing:6px;text-transform:uppercase;text-align:center;opacity:0;transform:scale(.8);animation:splashRoarIn .8s ease .2s forwards}
-  .splash-roar .s-red{color:var(--red)}
-  .splash-roar .s-green{color:var(--green)}
+
+  /* ROAR2K26 title — fades in with scale, then splits apart in phase2 */
+  .splash-roar{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(36px,10vw,100px);color:var(--text);letter-spacing:6px;text-transform:uppercase;text-align:center;white-space:nowrap;opacity:0;transform:scale(.8);animation:splashRoarIn .8s ease .2s forwards;text-shadow:0 0 20px rgba(255,255,255,.15)}
+  .splash-roar .s-red{color:var(--red);text-shadow:0 0 18px rgba(255,59,78,.4)}
+  .splash-roar .s-green{color:var(--green);text-shadow:0 0 18px rgba(61,220,151,.4)}
   @keyframes splashRoarIn{to{opacity:1;transform:scale(1)}}
   .splash.phase2 .splash-roar{animation:splashRoarSplit .7s ease forwards}
   @keyframes splashRoarSplit{
-    0%{opacity:1;transform:scale(1);letter-spacing:6px}
-    50%{opacity:.6;transform:scale(1.05);letter-spacing:30px}
-    100%{opacity:0;transform:scale(1.1);letter-spacing:60px}
+    0%{opacity:1;transform:scale(1);letter-spacing:6px;text-shadow:0 0 20px rgba(255,255,255,.15)}
+    40%{opacity:.7;transform:scale(1.03);letter-spacing:20px;text-shadow:0 0 30px rgba(255,255,255,.3)}
+    100%{opacity:0;transform:scale(1.08);letter-spacing:50px;text-shadow:0 0 40px rgba(255,255,255,.5)}
   }
-  /* NGIT X KMEC — conjoins from sides */
-  .splash-collab{display:flex;align-items:center;gap:0;font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(28px,8vw,64px);text-transform:uppercase;letter-spacing:4px;opacity:0;position:absolute}
-  .splash-collab .sp-ngit{color:var(--green);transform:translateX(-80px);transition:transform .7s cubic-bezier(.23,1,.32,1),opacity .5s ease}
-  .splash-collab .sp-x{color:var(--red);transform:scale(0);transition:transform .5s cubic-bezier(.23,1,.32,1) .2s,opacity .5s ease .2s;margin:0 clamp(6px,2vw,16px)}
-  .splash-collab .sp-kmec{color:var(--yellow);transform:translateX(80px);transition:transform .7s cubic-bezier(.23,1,.32,1),opacity .5s ease}
+
+  /* NGIT ✕ KMEC — dramatic conjoin from opposite sides with flash burst */
+  .splash-collab{display:flex;align-items:center;gap:0;font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(24px,8vw,64px);text-transform:uppercase;letter-spacing:4px;opacity:0;position:absolute}
+
+  /* NGIT flies in from far left */
+  .splash-collab .sp-ngit{color:var(--green);opacity:0;transform:translateX(-120px) scale(.7);filter:blur(4px)}
+  /* ✕ starts invisible at center */
+  .splash-collab .sp-x{color:var(--red);opacity:0;transform:scale(0);margin:0 clamp(4px,1.5vw,16px);position:relative}
+  /* KMEC flies in from far right */
+  .splash-collab .sp-kmec{color:var(--yellow);opacity:0;transform:translateX(120px) scale(.7);filter:blur(4px)}
+
+  /* Flash burst element behind the ✕ */
+  .sp-burst{position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(255,59,78,.6) 30%,rgba(61,220,151,.3) 60%,transparent 80%);transform:translate(-50%,-50%);pointer-events:none;z-index:-1}
+
+  /* Phase 2 — everything animates */
   .splash.phase2 .splash-collab{opacity:1}
-  .splash.phase2 .splash-collab .sp-ngit{transform:translateX(0)}
-  .splash.phase2 .splash-collab .sp-x{transform:scale(1)}
-  .splash.phase2 .splash-collab .sp-kmec{transform:translateX(0)}
+
+  /* NGIT conjoin animation — fly in, deblur, land with glow */
+  .splash.phase2 .splash-collab .sp-ngit{animation:conjoinLeft .8s cubic-bezier(.16,1,.3,1) forwards}
+  @keyframes conjoinLeft{
+    0%{opacity:0;transform:translateX(-120px) scale(.7);filter:blur(4px);text-shadow:none}
+    60%{opacity:1;filter:blur(0);text-shadow:0 0 30px rgba(61,220,151,.8)}
+    80%{transform:translateX(6px) scale(1.05);text-shadow:0 0 40px rgba(61,220,151,1),0 0 80px rgba(61,220,151,.5)}
+    100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 16px rgba(61,220,151,.5),0 0 40px rgba(61,220,151,.2)}
+  }
+
+  /* KMEC conjoin animation — fly in from right, mirror of NGIT */
+  .splash.phase2 .splash-collab .sp-kmec{animation:conjoinRight .8s cubic-bezier(.16,1,.3,1) forwards}
+  @keyframes conjoinRight{
+    0%{opacity:0;transform:translateX(120px) scale(.7);filter:blur(4px);text-shadow:none}
+    60%{opacity:1;filter:blur(0);text-shadow:0 0 30px rgba(255,179,71,.8)}
+    80%{transform:translateX(-6px) scale(1.05);text-shadow:0 0 40px rgba(255,179,71,1),0 0 80px rgba(255,179,71,.5)}
+    100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 16px rgba(255,179,71,.5),0 0 40px rgba(255,179,71,.2)}
+  }
+
+  /* ✕ — spins in with bounce scale when both sides meet */
+  .splash.phase2 .splash-collab .sp-x{animation:xBurst .6s cubic-bezier(.34,1.56,.64,1) .35s forwards}
+  @keyframes xBurst{
+    0%{opacity:0;transform:scale(0) rotate(-270deg)}
+    50%{opacity:1;transform:scale(1.4) rotate(0deg);text-shadow:0 0 40px rgba(255,59,78,1),0 0 80px rgba(255,59,78,.6)}
+    75%{transform:scale(.9) rotate(0deg)}
+    100%{opacity:1;transform:scale(1) rotate(0deg);text-shadow:0 0 16px rgba(255,59,78,.5),0 0 40px rgba(255,59,78,.2)}
+  }
+
+  /* Flash burst — expands outward when ✕ appears */
+  .splash.phase2 .sp-burst{animation:flashBurst .7s ease-out .4s forwards}
+  @keyframes flashBurst{
+    0%{width:0;height:0;opacity:0}
+    30%{width:200px;height:200px;opacity:.9}
+    100%{width:350px;height:350px;opacity:0}
+  }
+
+  /* After conjoin — synchronized glow pulse on all three */
+  .splash.phase2 .splash-collab .sp-ngit{animation:conjoinLeft .8s cubic-bezier(.16,1,.3,1) forwards,glowPulseGreen 2.5s ease-in-out 1.2s infinite}
+  .splash.phase2 .splash-collab .sp-x{animation:xBurst .6s cubic-bezier(.34,1.56,.64,1) .35s forwards,glowPulseRed 2.5s ease-in-out 1.2s infinite}
+  .splash.phase2 .splash-collab .sp-kmec{animation:conjoinRight .8s cubic-bezier(.16,1,.3,1) forwards,glowPulseYellow 2.5s ease-in-out 1.2s infinite}
+  @keyframes glowPulseGreen{0%,100%{text-shadow:0 0 10px rgba(61,220,151,.3),0 0 30px rgba(61,220,151,.1)}50%{text-shadow:0 0 24px rgba(61,220,151,.8),0 0 50px rgba(61,220,151,.4),0 0 80px rgba(61,220,151,.15)}}
+  @keyframes glowPulseRed{0%,100%{text-shadow:0 0 10px rgba(255,59,78,.3),0 0 30px rgba(255,59,78,.1)}50%{text-shadow:0 0 24px rgba(255,59,78,.8),0 0 50px rgba(255,59,78,.4),0 0 80px rgba(255,59,78,.15)}}
+  @keyframes glowPulseYellow{0%,100%{text-shadow:0 0 10px rgba(255,179,71,.3),0 0 30px rgba(255,179,71,.1)}50%{text-shadow:0 0 24px rgba(255,179,71,.8),0 0 50px rgba(255,179,71,.4),0 0 80px rgba(255,179,71,.15)}}
+
   /* Subtitle + enter button */
   .splash-sub{font-family:Poppins,sans-serif;font-size:14px;color:var(--muted);letter-spacing:2px;margin-top:80px;opacity:0;transition:opacity .5s ease}
   .splash.phase2 .splash-sub{opacity:1;transition-delay:.6s}
   .splash-enter{font-family:Orbitron,sans-serif;font-size:15px;letter-spacing:4px;color:#000;background:var(--green);border:none;padding:14px 40px;border-radius:50px;margin-top:24px;opacity:0;cursor:pointer;transition:opacity .5s ease,transform .15s ease,box-shadow .2s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
   .splash.phase2 .splash-enter{opacity:1;animation:splashPulseBtn 2s ease-in-out infinite;transition-delay:.8s}
   .splash-enter:hover,.splash-enter:active{transform:scale(1.05);box-shadow:0 0 24px var(--green-glow)}
-  @keyframes splashPulseBtn{0%,100%{box-shadow:0 0 8px var(--green-glow)}50%{box-shadow:0 0 24px var(--green-glow)}}
+  @keyframes splashPulseBtn{0%,100%{box-shadow:0 0 8px var(--green-glow)}50%{box-shadow:0 0 24px var(--green-glow),0 0 48px rgba(61,220,151,.2)}}
   .splash-glow{position:absolute;width:300px;height:300px;border-radius:50%;
     background:radial-gradient(circle,var(--green-glow) 0%,transparent 70%);opacity:.15;animation:splashGlow 3s ease-in-out infinite;pointer-events:none}
   @keyframes splashGlow{0%,100%{transform:scale(.8);opacity:.1}50%{transform:scale(1.2);opacity:.2}}
@@ -212,14 +264,14 @@
   /* HIGHLIGHTS */
   .highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .highlight{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px 22px;text-align:center;transition:transform .25s,border-color .25s,box-shadow .25s}
-  .highlight:hover{transform:translateY(-4px);border-color:var(--green);box-shadow:0 0 26px rgba(61,220,151,.18)}
+  .highlight:hover,.highlight:active{transform:translateY(-4px);border-color:var(--green);box-shadow:0 0 26px rgba(61,220,151,.18)}
   .highlight .icon{font-size:34px}
   .highlight h3{font-size:15px;color:var(--green);margin:12px 0 8px}
   .highlight p{margin:0;color:var(--muted);font-size:15px}
   .gallery{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-top:34px}
   .gallery figure{margin:0;position:relative;overflow:hidden;border-radius:var(--radius);border:1px solid var(--line)}
-  .gallery img{width:100%;height:100%;min-height:240px;object-fit:cover;display:block;transition:transform .5s}
-  .gallery figure:hover img{transform:scale(1.05)}
+  .gallery img{width:100%;height:auto;min-height:240px;max-height:420px;object-fit:cover;display:block;transition:transform .5s}
+  .gallery figure:hover img,.gallery figure:active img{transform:scale(1.05)}
   .gallery figcaption{position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.7);font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2px;padding:6px 10px;border-radius:6px}
 
   /* MENU */
@@ -324,16 +376,32 @@
   /* Mobile (≤600px) */
   @media(max-width:600px){
     /* Splash screen mobile fix */
-    .splash{padding:20px;box-sizing:border-box}
-    .splash-roar{font-size:clamp(32px,10vw,60px);letter-spacing:3px;word-break:keep-all;white-space:nowrap}
+    .splash-roar{font-size:clamp(34px,11vw,60px);letter-spacing:3px}
     @keyframes splashRoarSplit{
-      0%{opacity:1;transform:scale(1);letter-spacing:3px}
-      50%{opacity:.6;transform:scale(1.02);letter-spacing:10px}
-      100%{opacity:0;transform:scale(1.05);letter-spacing:18px}
+      0%{opacity:1;transform:scale(1);letter-spacing:3px;text-shadow:0 0 15px rgba(255,255,255,.15)}
+      40%{opacity:.7;transform:scale(1.02);letter-spacing:8px;text-shadow:0 0 25px rgba(255,255,255,.3)}
+      100%{opacity:0;transform:scale(1.04);letter-spacing:14px;text-shadow:0 0 35px rgba(255,255,255,.5)}
     }
-    .splash-collab{font-size:clamp(20px,7vw,40px);letter-spacing:2px;position:relative}
-    .splash-collab .sp-ngit{transform:translateX(-40px)}
-    .splash-collab .sp-kmec{transform:translateX(40px)}
+    .splash-collab{font-size:clamp(22px,7.5vw,40px);letter-spacing:2px;position:relative}
+    .splash-collab .sp-ngit{transform:translateX(-80px) scale(.7)}
+    .splash-collab .sp-kmec{transform:translateX(80px) scale(.7)}
+    @keyframes conjoinLeft{
+      0%{opacity:0;transform:translateX(-80px) scale(.7);filter:blur(3px);text-shadow:none}
+      60%{opacity:1;filter:blur(0);text-shadow:0 0 20px rgba(61,220,151,.8)}
+      80%{transform:translateX(4px) scale(1.04);text-shadow:0 0 30px rgba(61,220,151,1),0 0 60px rgba(61,220,151,.4)}
+      100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 12px rgba(61,220,151,.5)}
+    }
+    @keyframes conjoinRight{
+      0%{opacity:0;transform:translateX(80px) scale(.7);filter:blur(3px);text-shadow:none}
+      60%{opacity:1;filter:blur(0);text-shadow:0 0 20px rgba(255,179,71,.8)}
+      80%{transform:translateX(-4px) scale(1.04);text-shadow:0 0 30px rgba(255,179,71,1),0 0 60px rgba(255,179,71,.4)}
+      100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 12px rgba(255,179,71,.5)}
+    }
+    @keyframes flashBurst{
+      0%{width:0;height:0;opacity:0}
+      30%{width:140px;height:140px;opacity:.8}
+      100%{width:240px;height:240px;opacity:0}
+    }
     .splash-sub{margin-top:24px;font-size:12px;letter-spacing:1.5px}
     .splash-enter{font-size:13px;letter-spacing:3px;padding:12px 32px}
     .splash-glow{width:200px;height:200px}
@@ -370,16 +438,35 @@
     /* Info grid */
     .info{grid-template-columns:1fr;gap:10px}
 
-    /* Gallery */
-    .gallery{grid-template-columns:1fr}
-    .gallery img{min-height:200px}
+    /* Gallery — full-width stacked, proper aspect ratio */
+    .gallery{grid-template-columns:1fr;gap:10px}
+    .gallery img{min-height:180px;max-height:260px;object-fit:cover;object-position:center}
+    .gallery figure{border-radius:12px}
+    .gallery figcaption{left:8px;bottom:8px;font-size:9px;padding:5px 8px;letter-spacing:1.5px}
+
+    /* Highlights — compact on mobile */
+    .highlight{padding:18px 14px}
+    .highlight .icon{font-size:28px}
+    .highlight h3{font-size:14px;margin:8px 0 6px}
+    .highlight p{font-size:13px}
+
+    /* Hero background image — cover without stretching */
+    .hero-bg{background-size:cover;background-position:center center}
+
+    /* All images — prevent overflow */
+    img{max-width:100%;height:auto}
+
+    /* Preview screenshot */
+    #preview{max-height:200px;max-width:100%;border-radius:8px;object-fit:contain}
 
     /* Menu grid */
     .menu-grid{grid-template-columns:1fr}
 
     /* Location */
+    .loc{grid-template-columns:1fr}
     .loc .card{padding:18px}
     .loc h3{font-size:17px}
+    .map{min-height:250px;border-radius:12px}
 
     /* Step card (booking flow) */
     .step-card{padding:18px 14px;border-radius:14px;margin:0 4px}
@@ -459,17 +546,34 @@
 
   /* Small phones (≤380px) */
   @media(max-width:380px){
-    .splash-roar{font-size:clamp(24px,9vw,36px);letter-spacing:2px}
+    .splash-roar{font-size:clamp(28px,9vw,36px);letter-spacing:2px}
     @keyframes splashRoarSplit{
       0%{opacity:1;transform:scale(1);letter-spacing:2px}
-      50%{opacity:.6;transform:scale(1.02);letter-spacing:6px}
-      100%{opacity:0;transform:scale(1.03);letter-spacing:10px}
+      40%{opacity:.7;transform:scale(1.01);letter-spacing:5px}
+      100%{opacity:0;transform:scale(1.02);letter-spacing:8px}
     }
-    .splash-collab{font-size:clamp(14px,5.5vw,24px);letter-spacing:1px}
-    .splash-collab .sp-ngit{transform:translateX(-30px)}
-    .splash-collab .sp-kmec{transform:translateX(30px)}
+    .splash-collab{font-size:clamp(18px,6vw,26px);letter-spacing:1px}
+    .splash-collab .sp-ngit{transform:translateX(-60px) scale(.7)}
+    .splash-collab .sp-kmec{transform:translateX(60px) scale(.7)}
     .splash-collab .sp-x{margin:0 4px}
-    .splash-sub{margin-top:20px;font-size:10px}
+    @keyframes conjoinLeft{
+      0%{opacity:0;transform:translateX(-60px) scale(.7);filter:blur(2px);text-shadow:none}
+      60%{opacity:1;filter:blur(0);text-shadow:0 0 16px rgba(61,220,151,.7)}
+      80%{transform:translateX(3px) scale(1.03);text-shadow:0 0 24px rgba(61,220,151,.9)}
+      100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 10px rgba(61,220,151,.4)}
+    }
+    @keyframes conjoinRight{
+      0%{opacity:0;transform:translateX(60px) scale(.7);filter:blur(2px);text-shadow:none}
+      60%{opacity:1;filter:blur(0);text-shadow:0 0 16px rgba(255,179,71,.7)}
+      80%{transform:translateX(-3px) scale(1.03);text-shadow:0 0 24px rgba(255,179,71,.9)}
+      100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 10px rgba(255,179,71,.4)}
+    }
+    @keyframes flashBurst{
+      0%{width:0;height:0;opacity:0}
+      30%{width:100px;height:100px;opacity:.7}
+      100%{width:180px;height:180px;opacity:0}
+    }
+    .splash-sub{margin-top:18px;font-size:10px}
     .splash-enter{font-size:11px;padding:10px 24px;letter-spacing:2px}
     .wrap{padding:0 10px}
     .title{font-size:clamp(24px,8vw,36px)}
@@ -498,6 +602,18 @@
     .hero-actions .btn{font-size:12px;padding:12px 16px;min-height:46px}
     /* Section headings */
     h2{font-size:clamp(18px,6vw,24px)}
+    /* Gallery images tighter on tiny phones */
+    .gallery img{min-height:150px;max-height:220px}
+    .gallery figcaption{font-size:8px;padding:4px 6px;left:6px;bottom:6px}
+    /* Highlight cards compact */
+    .highlight{padding:14px 10px}
+    .highlight .icon{font-size:24px}
+    .highlight h3{font-size:13px}
+    .highlight p{font-size:12px}
+    /* Map smaller */
+    .map{min-height:200px}
+    /* QR image */
+    .qr-wrap img{width:160px;height:160px;padding:8px}
   }
 
   /* Touch-friendly: ensure all interactive elements are at least 44px */
@@ -569,7 +685,7 @@
 <div class="splash" id="splash">
   <div class="splash-glow"></div>
   <div class="splash-roar" id="splashRoar">ROAR<span class="s-red">2K</span><span class="s-green">26</span></div>
-  <div class="splash-collab" id="splashCollab"><span class="sp-ngit">NGIT</span><span class="sp-x">✕</span><span class="sp-kmec">KMEC</span></div>
+  <div class="splash-collab" id="splashCollab"><span class="sp-ngit">NGIT</span><span class="sp-x">✕<span class="sp-burst"></span></span><span class="sp-kmec">KMEC</span></div>
   <div class="splash-sub" id="splashSub">Freshers' Party 2026</div>
   <button class="splash-enter" id="splashEnter" type="button">TAP TO ENTER</button>
 </div>
