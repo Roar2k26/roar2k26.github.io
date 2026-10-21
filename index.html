@@ -32,53 +32,77 @@
   @keyframes splashFadeOut{to{opacity:0;visibility:hidden}}
 
   /* ROAR2K26 title — fades in with scale, then splits apart in phase2 */
-  .splash-roar{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(36px,10vw,100px);color:var(--text);letter-spacing:6px;text-transform:uppercase;text-align:center;white-space:nowrap;opacity:0;transform:scale(.8);animation:splashRoarIn .8s ease .2s forwards;text-shadow:0 0 20px rgba(255,255,255,.15)}
+  .splash-roar{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(36px,10vw,100px);color:var(--text);letter-spacing:6px;text-transform:uppercase;text-align:center;white-space:nowrap;opacity:0;-webkit-transform:scale(.8);transform:scale(.8);-webkit-animation:splashRoarIn .8s ease .2s forwards;animation:splashRoarIn .8s ease .2s forwards;text-shadow:0 0 20px rgba(255,255,255,.15);will-change:transform,opacity}
   .splash-roar .s-red{color:var(--red);text-shadow:0 0 18px rgba(255,59,78,.4)}
   .splash-roar .s-green{color:var(--green);text-shadow:0 0 18px rgba(61,220,151,.4)}
+  @-webkit-keyframes splashRoarIn{to{opacity:1;-webkit-transform:scale(1)}}
   @keyframes splashRoarIn{to{opacity:1;transform:scale(1)}}
-  .splash.phase2 .splash-roar{animation:splashRoarSplit .7s ease forwards}
+  .splash.phase2 .splash-roar{-webkit-animation:splashRoarSplit .7s ease forwards;animation:splashRoarSplit .7s ease forwards}
+  @-webkit-keyframes splashRoarSplit{
+    0%{opacity:1;-webkit-transform:scale(1);letter-spacing:6px;text-shadow:0 0 20px rgba(255,255,255,.15)}
+    40%{opacity:.7;-webkit-transform:scale(1.03);letter-spacing:20px;text-shadow:0 0 30px rgba(255,255,255,.3)}
+    100%{opacity:0;-webkit-transform:scale(1.08);letter-spacing:50px;text-shadow:0 0 40px rgba(255,255,255,.5)}
+  }
   @keyframes splashRoarSplit{
     0%{opacity:1;transform:scale(1);letter-spacing:6px;text-shadow:0 0 20px rgba(255,255,255,.15)}
     40%{opacity:.7;transform:scale(1.03);letter-spacing:20px;text-shadow:0 0 30px rgba(255,255,255,.3)}
     100%{opacity:0;transform:scale(1.08);letter-spacing:50px;text-shadow:0 0 40px rgba(255,255,255,.5)}
   }
 
-  /* NGIT ✕ KMEC — dramatic conjoin from opposite sides with flash burst */
-  .splash-collab{display:flex;align-items:center;gap:0;font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(24px,8vw,64px);text-transform:uppercase;letter-spacing:4px;opacity:0;position:absolute}
+  /* NGIT ✕ KMEC — dramatic conjoin from opposite sides */
+  .splash-collab{display:flex;align-items:center;gap:0;font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(24px,8vw,64px);text-transform:uppercase;letter-spacing:4px;opacity:0;position:relative;-webkit-transform:translateZ(0);transform:translateZ(0)}
 
-  /* NGIT flies in from far left */
-  .splash-collab .sp-ngit{color:var(--green);opacity:0;transform:translateX(-120px) scale(.7);filter:blur(4px)}
+  /* NGIT flies in from left — NO filter:blur, simple translateX only */
+  .splash-collab .sp-ngit{color:var(--green);opacity:0;-webkit-transform:translateX(-120px);transform:translateX(-120px);will-change:transform,opacity}
   /* ✕ starts invisible at center */
-  .splash-collab .sp-x{color:var(--red);opacity:0;transform:scale(0);margin:0 clamp(4px,1.5vw,16px);position:relative}
-  /* KMEC flies in from far right */
-  .splash-collab .sp-kmec{color:var(--yellow);opacity:0;transform:translateX(120px) scale(.7);filter:blur(4px)}
+  .splash-collab .sp-x{color:var(--red);opacity:0;-webkit-transform:scale(0);transform:scale(0);margin:0 clamp(4px,1.5vw,16px);position:relative;will-change:transform,opacity}
+  /* KMEC flies in from right — NO filter:blur, simple translateX only */
+  .splash-collab .sp-kmec{color:var(--yellow);opacity:0;-webkit-transform:translateX(120px);transform:translateX(120px);will-change:transform,opacity}
 
   /* Flash burst element behind the ✕ */
-  .sp-burst{position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(255,59,78,.6) 30%,rgba(61,220,151,.3) 60%,transparent 80%);transform:translate(-50%,-50%);pointer-events:none;z-index:-1}
+  .sp-burst{position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.9) 0%,rgba(255,59,78,.6) 30%,rgba(61,220,151,.3) 60%,transparent 80%);-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);pointer-events:none;z-index:-1}
 
   /* Phase 2 — everything animates */
   .splash.phase2 .splash-collab{opacity:1}
 
-  /* NGIT conjoin animation — fly in, deblur, land with glow */
-  .splash.phase2 .splash-collab .sp-ngit{animation:conjoinLeft .8s cubic-bezier(.16,1,.3,1) forwards}
+  /* NGIT conjoin animation — simple translateX + opacity, no filter */
+  .splash.phase2 .splash-collab .sp-ngit{-webkit-animation:conjoinLeft .8s cubic-bezier(.16,1,.3,1) forwards;animation:conjoinLeft .8s cubic-bezier(.16,1,.3,1) forwards}
+  @-webkit-keyframes conjoinLeft{
+    0%{opacity:0;-webkit-transform:translateX(-120px);text-shadow:none}
+    60%{opacity:1;text-shadow:0 0 30px rgba(61,220,151,.8)}
+    80%{-webkit-transform:translateX(6px);text-shadow:0 0 40px rgba(61,220,151,1),0 0 80px rgba(61,220,151,.5)}
+    100%{opacity:1;-webkit-transform:translateX(0);text-shadow:0 0 16px rgba(61,220,151,.5),0 0 40px rgba(61,220,151,.2)}
+  }
   @keyframes conjoinLeft{
-    0%{opacity:0;transform:translateX(-120px) scale(.7);filter:blur(4px);text-shadow:none}
-    60%{opacity:1;filter:blur(0);text-shadow:0 0 30px rgba(61,220,151,.8)}
-    80%{transform:translateX(6px) scale(1.05);text-shadow:0 0 40px rgba(61,220,151,1),0 0 80px rgba(61,220,151,.5)}
-    100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 16px rgba(61,220,151,.5),0 0 40px rgba(61,220,151,.2)}
+    0%{opacity:0;transform:translateX(-120px);text-shadow:none}
+    60%{opacity:1;text-shadow:0 0 30px rgba(61,220,151,.8)}
+    80%{transform:translateX(6px);text-shadow:0 0 40px rgba(61,220,151,1),0 0 80px rgba(61,220,151,.5)}
+    100%{opacity:1;transform:translateX(0);text-shadow:0 0 16px rgba(61,220,151,.5),0 0 40px rgba(61,220,151,.2)}
   }
 
   /* KMEC conjoin animation — fly in from right, mirror of NGIT */
-  .splash.phase2 .splash-collab .sp-kmec{animation:conjoinRight .8s cubic-bezier(.16,1,.3,1) forwards}
+  .splash.phase2 .splash-collab .sp-kmec{-webkit-animation:conjoinRight .8s cubic-bezier(.16,1,.3,1) forwards;animation:conjoinRight .8s cubic-bezier(.16,1,.3,1) forwards}
+  @-webkit-keyframes conjoinRight{
+    0%{opacity:0;-webkit-transform:translateX(120px);text-shadow:none}
+    60%{opacity:1;text-shadow:0 0 30px rgba(255,179,71,.8)}
+    80%{-webkit-transform:translateX(-6px);text-shadow:0 0 40px rgba(255,179,71,1),0 0 80px rgba(255,179,71,.5)}
+    100%{opacity:1;-webkit-transform:translateX(0);text-shadow:0 0 16px rgba(255,179,71,.5),0 0 40px rgba(255,179,71,.2)}
+  }
   @keyframes conjoinRight{
-    0%{opacity:0;transform:translateX(120px) scale(.7);filter:blur(4px);text-shadow:none}
-    60%{opacity:1;filter:blur(0);text-shadow:0 0 30px rgba(255,179,71,.8)}
-    80%{transform:translateX(-6px) scale(1.05);text-shadow:0 0 40px rgba(255,179,71,1),0 0 80px rgba(255,179,71,.5)}
-    100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 16px rgba(255,179,71,.5),0 0 40px rgba(255,179,71,.2)}
+    0%{opacity:0;transform:translateX(120px);text-shadow:none}
+    60%{opacity:1;text-shadow:0 0 30px rgba(255,179,71,.8)}
+    80%{transform:translateX(-6px);text-shadow:0 0 40px rgba(255,179,71,1),0 0 80px rgba(255,179,71,.5)}
+    100%{opacity:1;transform:translateX(0);text-shadow:0 0 16px rgba(255,179,71,.5),0 0 40px rgba(255,179,71,.2)}
   }
 
-  /* ✕ — spins in with bounce scale when both sides meet */
-  .splash.phase2 .splash-collab .sp-x{animation:xBurst .6s cubic-bezier(.34,1.56,.64,1) .35s forwards}
+  /* ✕ — spins in with bounce when both sides meet */
+  .splash.phase2 .splash-collab .sp-x{-webkit-animation:xBurst .6s cubic-bezier(.34,1.56,.64,1) .35s forwards;animation:xBurst .6s cubic-bezier(.34,1.56,.64,1) .35s forwards}
+  @-webkit-keyframes xBurst{
+    0%{opacity:0;-webkit-transform:scale(0) rotate(-270deg)}
+    50%{opacity:1;-webkit-transform:scale(1.4) rotate(0deg);text-shadow:0 0 40px rgba(255,59,78,1),0 0 80px rgba(255,59,78,.6)}
+    75%{-webkit-transform:scale(.9) rotate(0deg)}
+    100%{opacity:1;-webkit-transform:scale(1) rotate(0deg);text-shadow:0 0 16px rgba(255,59,78,.5),0 0 40px rgba(255,59,78,.2)}
+  }
   @keyframes xBurst{
     0%{opacity:0;transform:scale(0) rotate(-270deg)}
     50%{opacity:1;transform:scale(1.4) rotate(0deg);text-shadow:0 0 40px rgba(255,59,78,1),0 0 80px rgba(255,59,78,.6)}
@@ -87,7 +111,12 @@
   }
 
   /* Flash burst — expands outward when ✕ appears */
-  .splash.phase2 .sp-burst{animation:flashBurst .7s ease-out .4s forwards}
+  .splash.phase2 .sp-burst{-webkit-animation:flashBurst .7s ease-out .4s forwards;animation:flashBurst .7s ease-out .4s forwards}
+  @-webkit-keyframes flashBurst{
+    0%{width:0;height:0;opacity:0}
+    30%{width:200px;height:200px;opacity:.9}
+    100%{width:350px;height:350px;opacity:0}
+  }
   @keyframes flashBurst{
     0%{width:0;height:0;opacity:0}
     30%{width:200px;height:200px;opacity:.9}
@@ -95,9 +124,9 @@
   }
 
   /* After conjoin — synchronized glow pulse on all three */
-  .splash.phase2 .splash-collab .sp-ngit{animation:conjoinLeft .8s cubic-bezier(.16,1,.3,1) forwards,glowPulseGreen 2.5s ease-in-out 1.2s infinite}
-  .splash.phase2 .splash-collab .sp-x{animation:xBurst .6s cubic-bezier(.34,1.56,.64,1) .35s forwards,glowPulseRed 2.5s ease-in-out 1.2s infinite}
-  .splash.phase2 .splash-collab .sp-kmec{animation:conjoinRight .8s cubic-bezier(.16,1,.3,1) forwards,glowPulseYellow 2.5s ease-in-out 1.2s infinite}
+  .splash.phase2 .splash-collab .sp-ngit{-webkit-animation:conjoinLeft .8s cubic-bezier(.16,1,.3,1) forwards,glowPulseGreen 2.5s ease-in-out 1.2s infinite;animation:conjoinLeft .8s cubic-bezier(.16,1,.3,1) forwards,glowPulseGreen 2.5s ease-in-out 1.2s infinite}
+  .splash.phase2 .splash-collab .sp-x{-webkit-animation:xBurst .6s cubic-bezier(.34,1.56,.64,1) .35s forwards,glowPulseRed 2.5s ease-in-out 1.2s infinite;animation:xBurst .6s cubic-bezier(.34,1.56,.64,1) .35s forwards,glowPulseRed 2.5s ease-in-out 1.2s infinite}
+  .splash.phase2 .splash-collab .sp-kmec{-webkit-animation:conjoinRight .8s cubic-bezier(.16,1,.3,1) forwards,glowPulseYellow 2.5s ease-in-out 1.2s infinite;animation:conjoinRight .8s cubic-bezier(.16,1,.3,1) forwards,glowPulseYellow 2.5s ease-in-out 1.2s infinite}
   @keyframes glowPulseGreen{0%,100%{text-shadow:0 0 10px rgba(61,220,151,.3),0 0 30px rgba(61,220,151,.1)}50%{text-shadow:0 0 24px rgba(61,220,151,.8),0 0 50px rgba(61,220,151,.4),0 0 80px rgba(61,220,151,.15)}}
   @keyframes glowPulseRed{0%,100%{text-shadow:0 0 10px rgba(255,59,78,.3),0 0 30px rgba(255,59,78,.1)}50%{text-shadow:0 0 24px rgba(255,59,78,.8),0 0 50px rgba(255,59,78,.4),0 0 80px rgba(255,59,78,.15)}}
   @keyframes glowPulseYellow{0%,100%{text-shadow:0 0 10px rgba(255,179,71,.3),0 0 30px rgba(255,179,71,.1)}50%{text-shadow:0 0 24px rgba(255,179,71,.8),0 0 50px rgba(255,179,71,.4),0 0 80px rgba(255,179,71,.15)}}
@@ -375,27 +404,49 @@
 
   /* Mobile (≤600px) */
   @media(max-width:600px){
-    /* Splash screen mobile fix */
+    /* Splash screen mobile fix — NO filter:blur, NO scale, simple translateX only */
     .splash-roar{font-size:clamp(34px,11vw,60px);letter-spacing:3px}
+    @-webkit-keyframes splashRoarSplit{
+      0%{opacity:1;letter-spacing:3px;text-shadow:0 0 15px rgba(255,255,255,.15)}
+      40%{opacity:.7;letter-spacing:8px;text-shadow:0 0 25px rgba(255,255,255,.3)}
+      100%{opacity:0;letter-spacing:14px;text-shadow:0 0 35px rgba(255,255,255,.5)}
+    }
     @keyframes splashRoarSplit{
-      0%{opacity:1;transform:scale(1);letter-spacing:3px;text-shadow:0 0 15px rgba(255,255,255,.15)}
-      40%{opacity:.7;transform:scale(1.02);letter-spacing:8px;text-shadow:0 0 25px rgba(255,255,255,.3)}
-      100%{opacity:0;transform:scale(1.04);letter-spacing:14px;text-shadow:0 0 35px rgba(255,255,255,.5)}
+      0%{opacity:1;letter-spacing:3px;text-shadow:0 0 15px rgba(255,255,255,.15)}
+      40%{opacity:.7;letter-spacing:8px;text-shadow:0 0 25px rgba(255,255,255,.3)}
+      100%{opacity:0;letter-spacing:14px;text-shadow:0 0 35px rgba(255,255,255,.5)}
     }
     .splash-collab{font-size:clamp(22px,7.5vw,40px);letter-spacing:2px;position:relative}
-    .splash-collab .sp-ngit{transform:translateX(-80px) scale(.7)}
-    .splash-collab .sp-kmec{transform:translateX(80px) scale(.7)}
+    .splash-collab .sp-ngit{-webkit-transform:translateX(-80px);transform:translateX(-80px)}
+    .splash-collab .sp-kmec{-webkit-transform:translateX(80px);transform:translateX(80px)}
+    @-webkit-keyframes conjoinLeft{
+      0%{opacity:0;-webkit-transform:translateX(-80px);text-shadow:none}
+      60%{opacity:1;text-shadow:0 0 20px rgba(61,220,151,.8)}
+      80%{-webkit-transform:translateX(4px);text-shadow:0 0 30px rgba(61,220,151,1)}
+      100%{opacity:1;-webkit-transform:translateX(0);text-shadow:0 0 12px rgba(61,220,151,.5)}
+    }
     @keyframes conjoinLeft{
-      0%{opacity:0;transform:translateX(-80px) scale(.7);filter:blur(3px);text-shadow:none}
-      60%{opacity:1;filter:blur(0);text-shadow:0 0 20px rgba(61,220,151,.8)}
-      80%{transform:translateX(4px) scale(1.04);text-shadow:0 0 30px rgba(61,220,151,1),0 0 60px rgba(61,220,151,.4)}
-      100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 12px rgba(61,220,151,.5)}
+      0%{opacity:0;transform:translateX(-80px);text-shadow:none}
+      60%{opacity:1;text-shadow:0 0 20px rgba(61,220,151,.8)}
+      80%{transform:translateX(4px);text-shadow:0 0 30px rgba(61,220,151,1)}
+      100%{opacity:1;transform:translateX(0);text-shadow:0 0 12px rgba(61,220,151,.5)}
+    }
+    @-webkit-keyframes conjoinRight{
+      0%{opacity:0;-webkit-transform:translateX(80px);text-shadow:none}
+      60%{opacity:1;text-shadow:0 0 20px rgba(255,179,71,.8)}
+      80%{-webkit-transform:translateX(-4px);text-shadow:0 0 30px rgba(255,179,71,1)}
+      100%{opacity:1;-webkit-transform:translateX(0);text-shadow:0 0 12px rgba(255,179,71,.5)}
     }
     @keyframes conjoinRight{
-      0%{opacity:0;transform:translateX(80px) scale(.7);filter:blur(3px);text-shadow:none}
-      60%{opacity:1;filter:blur(0);text-shadow:0 0 20px rgba(255,179,71,.8)}
-      80%{transform:translateX(-4px) scale(1.04);text-shadow:0 0 30px rgba(255,179,71,1),0 0 60px rgba(255,179,71,.4)}
-      100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 12px rgba(255,179,71,.5)}
+      0%{opacity:0;transform:translateX(80px);text-shadow:none}
+      60%{opacity:1;text-shadow:0 0 20px rgba(255,179,71,.8)}
+      80%{transform:translateX(-4px);text-shadow:0 0 30px rgba(255,179,71,1)}
+      100%{opacity:1;transform:translateX(0);text-shadow:0 0 12px rgba(255,179,71,.5)}
+    }
+    @-webkit-keyframes flashBurst{
+      0%{width:0;height:0;opacity:0}
+      30%{width:140px;height:140px;opacity:.8}
+      100%{width:240px;height:240px;opacity:0}
     }
     @keyframes flashBurst{
       0%{width:0;height:0;opacity:0}
@@ -547,26 +598,48 @@
   /* Small phones (≤380px) */
   @media(max-width:380px){
     .splash-roar{font-size:clamp(28px,9vw,36px);letter-spacing:2px}
+    @-webkit-keyframes splashRoarSplit{
+      0%{opacity:1;letter-spacing:2px}
+      40%{opacity:.7;letter-spacing:5px}
+      100%{opacity:0;letter-spacing:8px}
+    }
     @keyframes splashRoarSplit{
-      0%{opacity:1;transform:scale(1);letter-spacing:2px}
-      40%{opacity:.7;transform:scale(1.01);letter-spacing:5px}
-      100%{opacity:0;transform:scale(1.02);letter-spacing:8px}
+      0%{opacity:1;letter-spacing:2px}
+      40%{opacity:.7;letter-spacing:5px}
+      100%{opacity:0;letter-spacing:8px}
     }
     .splash-collab{font-size:clamp(18px,6vw,26px);letter-spacing:1px}
-    .splash-collab .sp-ngit{transform:translateX(-60px) scale(.7)}
-    .splash-collab .sp-kmec{transform:translateX(60px) scale(.7)}
+    .splash-collab .sp-ngit{-webkit-transform:translateX(-60px);transform:translateX(-60px)}
+    .splash-collab .sp-kmec{-webkit-transform:translateX(60px);transform:translateX(60px)}
     .splash-collab .sp-x{margin:0 4px}
+    @-webkit-keyframes conjoinLeft{
+      0%{opacity:0;-webkit-transform:translateX(-60px);text-shadow:none}
+      60%{opacity:1;text-shadow:0 0 16px rgba(61,220,151,.7)}
+      80%{-webkit-transform:translateX(3px);text-shadow:0 0 24px rgba(61,220,151,.9)}
+      100%{opacity:1;-webkit-transform:translateX(0);text-shadow:0 0 10px rgba(61,220,151,.4)}
+    }
     @keyframes conjoinLeft{
-      0%{opacity:0;transform:translateX(-60px) scale(.7);filter:blur(2px);text-shadow:none}
-      60%{opacity:1;filter:blur(0);text-shadow:0 0 16px rgba(61,220,151,.7)}
-      80%{transform:translateX(3px) scale(1.03);text-shadow:0 0 24px rgba(61,220,151,.9)}
-      100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 10px rgba(61,220,151,.4)}
+      0%{opacity:0;transform:translateX(-60px);text-shadow:none}
+      60%{opacity:1;text-shadow:0 0 16px rgba(61,220,151,.7)}
+      80%{transform:translateX(3px);text-shadow:0 0 24px rgba(61,220,151,.9)}
+      100%{opacity:1;transform:translateX(0);text-shadow:0 0 10px rgba(61,220,151,.4)}
+    }
+    @-webkit-keyframes conjoinRight{
+      0%{opacity:0;-webkit-transform:translateX(60px);text-shadow:none}
+      60%{opacity:1;text-shadow:0 0 16px rgba(255,179,71,.7)}
+      80%{-webkit-transform:translateX(-3px);text-shadow:0 0 24px rgba(255,179,71,.9)}
+      100%{opacity:1;-webkit-transform:translateX(0);text-shadow:0 0 10px rgba(255,179,71,.4)}
     }
     @keyframes conjoinRight{
-      0%{opacity:0;transform:translateX(60px) scale(.7);filter:blur(2px);text-shadow:none}
-      60%{opacity:1;filter:blur(0);text-shadow:0 0 16px rgba(255,179,71,.7)}
-      80%{transform:translateX(-3px) scale(1.03);text-shadow:0 0 24px rgba(255,179,71,.9)}
-      100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0);text-shadow:0 0 10px rgba(255,179,71,.4)}
+      0%{opacity:0;transform:translateX(60px);text-shadow:none}
+      60%{opacity:1;text-shadow:0 0 16px rgba(255,179,71,.7)}
+      80%{transform:translateX(-3px);text-shadow:0 0 24px rgba(255,179,71,.9)}
+      100%{opacity:1;transform:translateX(0);text-shadow:0 0 10px rgba(255,179,71,.4)}
+    }
+    @-webkit-keyframes flashBurst{
+      0%{width:0;height:0;opacity:0}
+      30%{width:100px;height:100px;opacity:.7}
+      100%{width:180px;height:180px;opacity:0}
     }
     @keyframes flashBurst{
       0%{width:0;height:0;opacity:0}
@@ -1112,6 +1185,22 @@ document.getElementById("toastClose").addEventListener("click", () => {
 
   // Phase 2 after 1.5s: ROAR2K26 splits, NGIT X KMEC conjoins
   setTimeout(function() { splash.classList.add("phase2"); }, 1500);
+
+  // MOBILE SAFETY: Force text visible after 2.5s in case CSS animations fail silently
+  setTimeout(function() {
+    var collab = document.getElementById("splashCollab");
+    if (collab) {
+      collab.style.opacity = "1";
+      var spans = collab.querySelectorAll("span");
+      for (var i = 0; i < spans.length; i++) {
+        spans[i].style.opacity = "1";
+        spans[i].style.transform = "translateX(0) scale(1) rotate(0deg)";
+        spans[i].style.webkitTransform = "translateX(0) scale(1) rotate(0deg)";
+        spans[i].style.filter = "none";
+        spans[i].style.webkitFilter = "none";
+      }
+    }
+  }, 2500);
 
   // Dismiss splash on any interaction
   var entered = false;
