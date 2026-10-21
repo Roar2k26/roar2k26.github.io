@@ -404,21 +404,25 @@
 
   /* Mobile (≤600px) */
   @media(max-width:600px){
-    /* Splash screen mobile fix — NO filter:blur, NO scale, simple translateX only */
-    .splash-roar{font-size:clamp(34px,11vw,60px);letter-spacing:3px}
-    @-webkit-keyframes splashRoarSplit{
-      0%{opacity:1;letter-spacing:3px;text-shadow:0 0 15px rgba(255,255,255,.15)}
-      40%{opacity:.7;letter-spacing:8px;text-shadow:0 0 25px rgba(255,255,255,.3)}
-      100%{opacity:0;letter-spacing:14px;text-shadow:0 0 35px rgba(255,255,255,.5)}
+    /* Splash screen mobile — TEXT VISIBLE BY DEFAULT, no animation dependency */
+    .splash-roar{font-size:clamp(34px,11vw,60px);letter-spacing:3px;opacity:1!important;-webkit-transform:none!important;transform:none!important;-webkit-animation:none!important;animation:none!important}
+    .splash.phase2 .splash-roar{-webkit-animation:splashRoarSplitMob .7s ease forwards!important;animation:splashRoarSplitMob .7s ease forwards!important}
+    @-webkit-keyframes splashRoarSplitMob{
+      0%{opacity:1;letter-spacing:3px}
+      40%{opacity:.7;letter-spacing:8px}
+      100%{opacity:0;letter-spacing:14px}
     }
-    @keyframes splashRoarSplit{
-      0%{opacity:1;letter-spacing:3px;text-shadow:0 0 15px rgba(255,255,255,.15)}
-      40%{opacity:.7;letter-spacing:8px;text-shadow:0 0 25px rgba(255,255,255,.3)}
-      100%{opacity:0;letter-spacing:14px;text-shadow:0 0 35px rgba(255,255,255,.5)}
+    @keyframes splashRoarSplitMob{
+      0%{opacity:1;letter-spacing:3px}
+      40%{opacity:.7;letter-spacing:8px}
+      100%{opacity:0;letter-spacing:14px}
     }
-    .splash-collab{font-size:clamp(22px,7.5vw,40px);letter-spacing:2px;position:relative}
+    .splash-collab{font-size:clamp(22px,7.5vw,40px);letter-spacing:2px;position:relative;opacity:0}
+    .splash.phase2 .splash-collab{opacity:1}
+    .splash-collab .sp-ngit,.splash-collab .sp-kmec,.splash-collab .sp-x{opacity:1!important}
     .splash-collab .sp-ngit{-webkit-transform:translateX(-80px);transform:translateX(-80px)}
     .splash-collab .sp-kmec{-webkit-transform:translateX(80px);transform:translateX(80px)}
+    .splash-collab .sp-x{-webkit-transform:scale(0);transform:scale(0)}
     @-webkit-keyframes conjoinLeft{
       0%{opacity:0;-webkit-transform:translateX(-80px);text-shadow:none}
       60%{opacity:1;text-shadow:0 0 20px rgba(61,220,151,.8)}
@@ -593,17 +597,53 @@
 
     /* Music FAB */
     .music-fab{bottom:14px;right:14px;width:44px;height:44px;font-size:18px}
+
+    /* ── MOBILE: Convert hover effects to always-on glow/animations ── */
+
+    /* ROAR2K26 title — always glowing on mobile instead of hover-only */
+    .glow-title{-webkit-animation:titleglow 2.5s ease-in-out infinite;animation:titleglow 2.5s ease-in-out infinite}
+    .glow-title .red{text-shadow:0 0 16px var(--red),0 0 32px var(--red-glow)}
+    .glow-title .green{text-shadow:0 0 16px var(--green),0 0 32px var(--green-glow)}
+
+    /* Buttons — always show glow border on mobile */
+    .btn{box-shadow:0 0 10px rgba(61,220,151,.12)}
+    .btn:active{background:var(--green);color:#000;box-shadow:0 0 22px var(--green-glow);-webkit-transform:scale(.97);transform:scale(.97)}
+    .btn.red:active{background:#ff5a69;box-shadow:0 0 22px var(--red-glow);color:#fff}
+
+    /* Highlight cards — subtle glow border always visible + tap effect */
+    .highlight{border-color:rgba(61,220,151,.15);box-shadow:0 0 12px rgba(61,220,151,.06)}
+    .highlight:active{-webkit-transform:translateY(-3px);transform:translateY(-3px);border-color:var(--green);box-shadow:0 0 20px rgba(61,220,151,.18)}
+
+    /* Gallery images — tap scale effect */
+    .gallery figure:active img{-webkit-transform:scale(1.03);transform:scale(1.03)}
+
+    /* Coordinator cards — subtle glow always on */
+    .coords a{border-color:rgba(61,220,151,.12);box-shadow:0 0 8px rgba(61,220,151,.06)}
+    .coords a:active{border-color:var(--green);box-shadow:0 0 18px rgba(61,220,151,.2)}
+
+    /* UPI app buttons — tap effect */
+    .upi-app:active{border-color:var(--green);background:#0a1a0f;box-shadow:0 0 12px rgba(61,220,151,.15)}
+
+    /* Background graphics — boost opacity for mobile visibility */
+    .bg-visuals{opacity:.28}
+    .gradient-wave{opacity:.14}
+    .hero-scanline::before{height:3px;opacity:.8}
+    .hero-frame{border-color:rgba(61,220,151,.14)}
+
+    /* Brand nav — tap glow */
+    .brand:active{color:#ff6b7b}
   }
 
   /* Small phones (≤380px) */
   @media(max-width:380px){
-    .splash-roar{font-size:clamp(28px,9vw,36px);letter-spacing:2px}
-    @-webkit-keyframes splashRoarSplit{
+    .splash-roar{font-size:clamp(28px,9vw,36px);letter-spacing:2px;opacity:1!important;-webkit-transform:none!important;transform:none!important;-webkit-animation:none!important;animation:none!important}
+    .splash.phase2 .splash-roar{-webkit-animation:splashRoarSplitMob .7s ease forwards!important;animation:splashRoarSplitMob .7s ease forwards!important}
+    @-webkit-keyframes splashRoarSplitMob{
       0%{opacity:1;letter-spacing:2px}
       40%{opacity:.7;letter-spacing:5px}
       100%{opacity:0;letter-spacing:8px}
     }
-    @keyframes splashRoarSplit{
+    @keyframes splashRoarSplitMob{
       0%{opacity:1;letter-spacing:2px}
       40%{opacity:.7;letter-spacing:5px}
       100%{opacity:0;letter-spacing:8px}
@@ -687,6 +727,21 @@
     .map{min-height:200px}
     /* QR image */
     .qr-wrap img{width:160px;height:160px;padding:8px}
+  }
+
+  /* Touch devices (no hover) — convert hover glow to always-on or :active */
+  @media(hover:none){
+    .glow-title{-webkit-animation:titleglow 2.5s ease-in-out infinite;animation:titleglow 2.5s ease-in-out infinite}
+    .glow-title .red{text-shadow:0 0 16px var(--red),0 0 32px var(--red-glow)}
+    .glow-title .green{text-shadow:0 0 16px var(--green),0 0 32px var(--green-glow)}
+    .highlight{border-color:rgba(61,220,151,.12)}
+    .highlight:active{-webkit-transform:translateY(-3px);transform:translateY(-3px);border-color:var(--green);box-shadow:0 0 20px rgba(61,220,151,.15)}
+    .btn:active{background:var(--green);color:#000;box-shadow:0 0 22px var(--green-glow)}
+    .btn.red:active{background:#ff5a69;box-shadow:0 0 22px var(--red-glow);color:#fff}
+    .gallery figure:active img{-webkit-transform:scale(1.03);transform:scale(1.03)}
+    .coords a:active{border-color:var(--green);box-shadow:0 0 18px rgba(61,220,151,.2)}
+    .bg-visuals{opacity:.28}
+    .gradient-wave{opacity:.14}
   }
 
   /* Touch-friendly: ensure all interactive elements are at least 44px */
@@ -1178,6 +1233,10 @@ document.getElementById("toastClose").addEventListener("click", () => {
    JS triggers phase 2 (split → NGIT X KMEC conjoin)
    and handles the TAP TO ENTER dismiss.
    ═══════════════════════════════════════════════════════ */
+/* Force scroll to top on every page load/refresh */
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
 (function() {
   var splash = document.getElementById("splash");
   if (!splash) return;
@@ -1186,21 +1245,39 @@ document.getElementById("toastClose").addEventListener("click", () => {
   // Phase 2 after 1.5s: ROAR2K26 splits, NGIT X KMEC conjoins
   setTimeout(function() { splash.classList.add("phase2"); }, 1500);
 
-  // MOBILE SAFETY: Force text visible after 2.5s in case CSS animations fail silently
+  // MOBILE: Force ROAR2K26 text visible immediately via JS (CSS animations unreliable)
+  var isMobile = window.innerWidth <= 600 || ('ontouchstart' in window);
+  if (isMobile) {
+    var roar = document.getElementById("splashRoar");
+    if (roar) {
+      roar.style.opacity = "1";
+      roar.style.transform = "none";
+      roar.style.webkitTransform = "none";
+      roar.style.animation = "none";
+      roar.style.webkitAnimation = "none";
+    }
+  }
+
+  // MOBILE SAFETY: Force NGIT X KMEC visible after phase2 in case animations fail
   setTimeout(function() {
     var collab = document.getElementById("splashCollab");
-    if (collab) {
+    if (collab && isMobile) {
       collab.style.opacity = "1";
       var spans = collab.querySelectorAll("span");
       for (var i = 0; i < spans.length; i++) {
         spans[i].style.opacity = "1";
         spans[i].style.transform = "translateX(0) scale(1) rotate(0deg)";
         spans[i].style.webkitTransform = "translateX(0) scale(1) rotate(0deg)";
-        spans[i].style.filter = "none";
-        spans[i].style.webkitFilter = "none";
       }
     }
-  }, 2500);
+    // Also ensure ROAR2K26 hides in phase2 on mobile
+    var roar2 = document.getElementById("splashRoar");
+    if (roar2 && splash.classList.contains("phase2") && isMobile) {
+      roar2.style.transition = "opacity .5s ease, letter-spacing .5s ease";
+      roar2.style.opacity = "0";
+      roar2.style.letterSpacing = "14px";
+    }
+  }, 1800);
 
   // Dismiss splash on any interaction
   var entered = false;
