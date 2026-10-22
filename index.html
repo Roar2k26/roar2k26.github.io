@@ -1,4 +1,3 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1082,25 +1081,18 @@
     <div class="step-card hidden" id="stepDetails">
       <h3>Your Details</h3>
       <form id="detailsForm">
-        <label>Full name <input type="text" name="name" required autocomplete="name"></label>
-        <label>Email <input type="email" name="email" required autocomplete="email"></label>
-        <label>College <input type="text" name="college" required></label>
-        <label>Branch <input type="text" name="branch" required placeholder="e.g. CSE, ECE, Mechanical"></label>
-        <label>Roll Number <input type="text" name="roll" required></label>
-        <fieldset>
-          <legend>Payment App</legend>
-          <label class="radio"><input type="radio" name="mode" value="GPay" checked> GPay</label>
-          <label class="radio"><input type="radio" name="mode" value="PhonePe"> PhonePe</label>
-          <label class="radio"><input type="radio" name="mode" value="Paytm"> Paytm</label>
-          <label class="radio"><input type="radio" name="mode" value="Other UPI App"> Other UPI</label>
-        </fieldset>
+        <label>Full name <input type="text" name="name" autocomplete="name"></label>
+        <label>Email <input type="email" name="email" autocomplete="email"></label>
+        <label>College <input type="text" name="college"></label>
+        <label>Branch <input type="text" name="branch" placeholder="e.g. CSE, ECE, Mechanical"></label>
+        <label>Roll Number <input type="text" name="roll"></label>
         <label class="consent">
-          <input type="checkbox" name="age" required>
+          <input type="checkbox" name="age">
           I confirm I am 18 or older and I consent to my details and payment proof being shared with the event hosts.
         </label>
         <div class="btn-row" style="margin-top:18px">
           <button class="btn ghost" type="button" id="btnBackToTerms">GO BACK</button>
-          <button class="btn red" type="submit">CONTINUE TO PAYMENT QR</button>
+          <button class="btn red" type="button" id="btnContinuePay">CONTINUE TO PAYMENT QR</button>
         </div>
       </form>
     </div>
@@ -1207,6 +1199,7 @@
   <p>Crafted by <a href="https://kravagroup.co.in" target="_blank" rel="noopener noreferrer" style="color:var(--green);text-decoration:none">Krava Group</a>.</p>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════
    TOAST NOTIFICATION — replaces alert() for mobile UX
@@ -1328,7 +1321,7 @@ const CONFIG = Object.freeze({
   MAX_EMAIL_LENGTH: 254,
   MAX_UTR_LENGTH: 30,
   RATE_LIMIT_WINDOW: 600000,         // 10 minutes
-  RATE_LIMIT_MAX: 3
+  RATE_LIMIT_MAX: 50
 });
 
 /* ═══════════════════════════════════════════════════════
@@ -1465,6 +1458,8 @@ function validateScreenshot(file) {
   });
 })();
 
+/* ── QR Code: loaded via CDN (qrcode-generator 1.4.4) ── */
+
 /* Mobile menu */
 const menuBtn = document.getElementById("menuBtn");
 const navList = document.getElementById("navList");
@@ -1512,9 +1507,8 @@ let order = {};
 let shotData = null;   // compressed screenshot as base64 JPEG (no prefix)
 
 /* Step 3 -> 4: save details, show QR (with input validation) */
-document.getElementById("detailsForm").addEventListener("submit", e => {
-  e.preventDefault();
-  const f = Object.fromEntries(new FormData(e.target));
+document.getElementById("btnContinuePay").addEventListener("click", () => {
+  const f = Object.fromEntries(new FormData(document.getElementById("detailsForm")));
 
   // ── STRICT INPUT VALIDATION ──
   if (!validateName(f.name)) { showToast("Please enter a valid name (2-100 characters, no special markup)."); return; }
@@ -1522,7 +1516,6 @@ document.getElementById("detailsForm").addEventListener("submit", e => {
   if (!validateName(f.college)) { showToast("Please enter a valid college name."); return; }
   if (!f.branch || f.branch.trim().length < 1 || f.branch.trim().length > 100) { showToast("Please enter your branch."); return; }
   if (!validateRoll(f.roll)) { showToast("Please enter a valid roll number (alphanumeric, 3-30 characters)."); return; }
-  if (!f.mode) { showToast("Please select a payment app."); return; }
   if (!f.age) { showToast("Please confirm you are 18+ and consent to sharing details."); return; }
 
   // Rate limit
@@ -1536,7 +1529,7 @@ document.getElementById("detailsForm").addEventListener("submit", e => {
   const timestamp = Date.now();
   order = {
     name: sanitize(f.name), email: sanitize(f.email), college: sanitize(f.college),
-    branch: sanitize(f.branch), roll: sanitize(f.roll), mode: sanitize(f.mode),
+    branch: sanitize(f.branch), roll: sanitize(f.roll), mode: "UPI",
     item: "1 x ROAR2K26 Freshers Pass",
     amount: amount,
     consent: true,
@@ -1559,23 +1552,59 @@ document.getElementById("detailsForm").addEventListener("submit", e => {
     amazonpay: upiUri,
     generic: upiUri
   };
+  // App display names for tracking
+  const appNames = {
+    gpay: "Google Pay", phonepe: "PhonePe", paytm: "Paytm",
+    bhim: "BHIM", amazonpay: "Amazon Pay", generic: "Other UPI"
+  };
   document.querySelectorAll(".upi-app").forEach(btn => {
     const app = btn.dataset.app;
     btn.href = appLinks[app] || upiUri;
+    btn.addEventListener("click", function() {
+      // Record which UPI app was selected
+      if (order) order.mode = "UPI - " + (appNames[app] || app);
+      // Highlight selected app
+      document.querySelectorAll(".upi-app").forEach(b => b.style.borderColor = "");
+      this.style.borderColor = "var(--green)";
+    });
   });
   // Make QR image tappable — opens generic UPI intent on mobile
   document.getElementById("qrLink").href = upiUri;
+  document.getElementById("qrLink").addEventListener("click", function() {
+    if (order) order.mode = "UPI - QR Scan";
+  });
 
-  // Generate QR code dynamically with amount included
+  // Generate QR code client-side (no external API dependency)
   (function generateQR() {
-    const canvas = document.createElement("canvas");
-    const size = 400;
-    canvas.width = size;
-    canvas.height = size;
-    // Use QR Server API to generate QR with full UPI URI (includes amount)
-    const qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=" + size + "x" + size + "&data=" + encodeURIComponent(upiUri) + "&format=png&margin=8";
     const img = document.getElementById("qrImg");
-    img.src = qrApiUrl;
+    try {
+      if (typeof qrcode === "function") {
+        const qr = qrcode(0, "L");
+        qr.addData(upiUri);
+        qr.make();
+        // Render to canvas for high-res data URL
+        const mods = qr.getModuleCount();
+        const cell = Math.max(4, Math.floor(280 / mods));
+        const margin = 8;
+        const total = mods * cell + margin * 2;
+        const c = document.createElement("canvas");
+        c.width = c.height = total;
+        const ctx = c.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, total, total);
+        ctx.fillStyle = "#000000";
+        for (let r = 0; r < mods; r++)
+          for (let co = 0; co < mods; co++)
+            if (qr.isDark(r, co))
+              ctx.fillRect(margin + co * cell, margin + r * cell, cell, cell);
+        img.src = c.toDataURL("image/png");
+      } else {
+        throw new Error("qrcode lib not loaded");
+      }
+    } catch(e) {
+      // Fallback: external API if client-side fails
+      img.src = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=" + encodeURIComponent(upiUri) + "&format=png&margin=8";
+    }
     img.alt = "UPI QR - Pay \u20b9" + amount + " to " + CONFIG.PAYEE_NAME;
   })();
   showStep("stepPay");
