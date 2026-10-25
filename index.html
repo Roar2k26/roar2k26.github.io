@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ROAR2K26 | Freshers Night · Open Your Mouth</title>
-<meta name="description" content="ROAR2K26 Freshers' event at Open Your Mouth, 15 November 2026, 12 PM to 4 PM. Alcohol-free, 18+ only.">
+<meta name="description" content="ROAR2K26 Freshers' event at Open Your Mouth, 15 November 2026, 12:30 PM to 5:30 PM. Alcohol-free, 18+ only.">
 <!-- ═══════════════════════════════════════════════════════
      SECURITY: CSP, X-Frame-Options, and Permissions-Policy
      are commented out here because meta-tag CSP conflicts
@@ -133,7 +133,9 @@
   /* Subtitle + enter button */
   .splash-sub{font-family:Poppins,sans-serif;font-size:14px;color:var(--muted);letter-spacing:2px;margin-top:80px;opacity:0;transition:opacity .5s ease}
   .splash.phase2 .splash-sub{opacity:1;transition-delay:.6s}
-  .splash-enter{font-family:Orbitron,sans-serif;font-size:15px;letter-spacing:4px;color:#000;background:var(--green);border:none;padding:14px 40px;border-radius:50px;margin-top:24px;opacity:0;cursor:pointer;transition:opacity .5s ease,transform .15s ease,box-shadow .2s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+  .splash-disclaimer{font-family:Poppins,sans-serif;font-size:10px;color:var(--muted);text-align:center;max-width:320px;line-height:1.5;margin-top:16px;opacity:0;transition:opacity .5s ease}
+  .splash.phase2 .splash-disclaimer{opacity:.7;transition-delay:.7s}
+  .splash-enter{font-family:Orbitron,sans-serif;font-size:15px;letter-spacing:4px;color:#000;background:var(--green);border:none;padding:14px 40px;border-radius:50px;margin-top:16px;opacity:0;cursor:pointer;transition:opacity .5s ease,transform .15s ease,box-shadow .2s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
   .splash.phase2 .splash-enter{opacity:1;animation:splashPulseBtn 2s ease-in-out infinite;transition-delay:.8s}
   .splash-enter:hover,.splash-enter:active{transform:scale(1.05);box-shadow:0 0 24px var(--green-glow)}
   @keyframes splashPulseBtn{0%,100%{box-shadow:0 0 8px var(--green-glow)}50%{box-shadow:0 0 24px var(--green-glow),0 0 48px rgba(61,220,151,.2)}}
@@ -772,6 +774,24 @@
     .hero{min-height:80dvh}
   }
   /* TOAST NOTIFICATION (replaces alert()) */
+  /* SCROLL POPUP — limited passes urgency */
+  .scroll-popup-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}
+  .scroll-popup-overlay.show{opacity:1;visibility:visible}
+  .scroll-popup{position:fixed;bottom:0;left:0;right:0;z-index:9999;transform:translateY(100%);transition:transform .4s cubic-bezier(.22,1,.36,1)}
+  .scroll-popup.show{transform:translateY(0)}
+  .scroll-popup-card{margin:0 auto;max-width:420px;background:linear-gradient(135deg,#0f1a14 0%,#0b0f0d 100%);border:1px solid var(--green);border-bottom:none;border-radius:20px 20px 0 0;padding:28px 24px 24px;text-align:center;box-shadow:0 -8px 40px rgba(61,220,151,.15)}
+  .scroll-popup-badge{display:inline-block;background:var(--red);color:#fff;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;padding:4px 14px;border-radius:20px;margin-bottom:14px;animation:popupPulse 1.5s ease-in-out infinite}
+  @keyframes popupPulse{0%,100%{box-shadow:0 0 8px rgba(255,59,78,.4)}50%{box-shadow:0 0 20px rgba(255,59,78,.7)}}
+  .scroll-popup-title{font-family:Orbitron,sans-serif;font-size:18px;color:var(--text);font-weight:700;margin-bottom:6px}
+  .scroll-popup-sub{font-family:Poppins,sans-serif;font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+  .scroll-popup-price{font-family:Orbitron,sans-serif;font-size:14px;color:var(--muted);margin-bottom:18px}
+  .scroll-popup-price .old{text-decoration:line-through;text-decoration-color:var(--red);opacity:.6;margin-right:8px}
+  .scroll-popup-price .now{font-size:22px;color:var(--green);text-shadow:0 0 10px var(--green-glow)}
+  .scroll-popup-btn{display:inline-block;font-family:Orbitron,sans-serif;font-size:13px;letter-spacing:2px;color:#000;background:var(--green);border:none;padding:14px 36px;border-radius:50px;cursor:pointer;text-decoration:none;transition:transform .15s ease,box-shadow .2s ease}
+  .scroll-popup-btn:active{transform:scale(.97)}
+  .scroll-popup-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px;line-height:1}
+  .scroll-popup-close:hover{color:var(--text)}
+
   .toast{position:fixed;top:0;left:0;right:0;z-index:10000;transform:translateY(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none}
   .toast.show{transform:translateY(0);pointer-events:auto}
   .toast-inner{margin:env(safe-area-inset-top,8px) 12px 0;padding:14px 18px;border-radius:0 0 14px 14px;font-family:Poppins,sans-serif;font-size:14px;line-height:1.5;color:#fff;display:flex;align-items:flex-start;gap:10px;backdrop-filter:blur(12px);box-shadow:0 4px 24px rgba(0,0,0,.5)}
@@ -809,11 +829,25 @@
 <!-- Toast notification -->
 <div class="toast" id="toast"><div class="toast-inner"><span class="toast-msg" id="toastMsg"></span><button class="toast-close" id="toastClose" aria-label="Close">✕</button></div></div>
 
+<!-- SCROLL POPUP — limited passes -->
+<div class="scroll-popup-overlay" id="scrollPopupOverlay"></div>
+<div class="scroll-popup" id="scrollPopup">
+  <div class="scroll-popup-card">
+    <button class="scroll-popup-close" id="scrollPopupClose" aria-label="Close">✕</button>
+    <div class="scroll-popup-badge">LIMITED AVAILABILITY</div>
+    <div class="scroll-popup-title">Passes Filling Fast!</div>
+    <p class="scroll-popup-sub">Don't miss the biggest freshers' party of 2026. Grab your pass before they're gone.</p>
+    <div class="scroll-popup-price"><span class="old">₹1450</span><span class="now">₹1300</span></div>
+    <a class="scroll-popup-btn" href="#pass" id="scrollPopupCTA">BOOK YOUR PASS NOW</a>
+  </div>
+</div>
+
 <div class="splash" id="splash">
   <div class="splash-glow"></div>
   <div class="splash-roar" id="splashRoar">ROAR<span class="s-red">2K</span><span class="s-green">26</span></div>
   <div class="splash-collab" id="splashCollab"><span class="sp-ngit">NGIT</span><span class="sp-x">✕<span class="sp-burst"></span></span><span class="sp-kmec">KMEC</span></div>
   <div class="splash-sub" id="splashSub">Freshers' Party 2026</div>
+  <p class="splash-disclaimer">Not an official event. The college management has no involvement in organizing or endorsing it.</p>
   <button class="splash-enter" id="splashEnter" type="button">TAP TO ENTER</button>
 </div>
 
@@ -924,7 +958,7 @@
   <div class="wrap">
     <p class="eyebrow">COUNTDOWN TO THE ROAR</p>
     <h2 class="title">Event Starts In</h2>
-    <p class="subtitle">15 November 2026 · 12:00 PM IST</p>
+    <p class="subtitle">15 November 2026 · 12:30 PM IST</p>
     <div class="countdown">
       <div class="cd"><b id="d">00</b><small>Days</small></div>
       <div class="cd"><b id="h">00</b><small>Hours</small></div>
@@ -934,7 +968,7 @@
     <div class="started" id="started">THE ROAR IS LIVE 🔥</div>
     <div class="info">
       <div><small>Date</small><b>15 November 2026</b></div>
-      <div><small>Time</small><b>12 PM – 4 PM</b></div>
+      <div><small>Time</small><b>12:30 PM – 5:30 PM</b></div>
       <div><small>Venue</small><b>Open Your Mouth</b></div>
     </div>
   </div>
@@ -989,7 +1023,7 @@
         <span class="tag">📍 HYDERABAD</span>
         <h3>Open Your Mouth</h3>
         <p>📅 15 November 2026</p>
-        <p>⏰ 12 PM – 4 PM</p>
+        <p>⏰ 12:30 PM – 5:30 PM</p>
         <p>🔞 18+ only · 🚫 No alcohol</p>
         <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Open+Your+Mouth+Hyderabad" target="_blank" rel="noopener noreferrer">GET DIRECTIONS</a>
       </div>
@@ -1006,12 +1040,13 @@
 <section id="pass" class="confetti">
   <div class="wrap">
     <p class="eyebrow">YOUR ENTRY</p>
+    <p style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:6px;opacity:.7">Not an official event. The college management has no involvement in organizing or endorsing it.</p>
     <h2 class="title">Book Your Pass</h2>
     <p class="subtitle">One pass per person · Pay via PhonePe / UPI</p>
 
     <!-- Step 1: pass summary -->
     <div class="step-card" id="stepPass">
-      <div class="price">₹<span id="unitPrice"></span><small>per pass · 1 pass per person</small></div>
+      <div class="price"><span style="font-size:.55em;color:var(--muted);text-decoration:line-through;text-decoration-color:var(--red);margin-right:8px;opacity:.7">₹1450</span>₹<span id="unitPrice"></span><small>per pass · 1 pass per person</small></div>
       <ul class="includes">
         <li>Unlimited Buffet Lunch</li>
         <li>Unlimited Mocktails &amp; Cool Drinks</li>
@@ -1026,7 +1061,7 @@
       <h3>ROAR2K26 · Terms and Conditions</h3>
       <div class="terms">
         <h4>Event Timing</h4>
-        <p>The Freshers Party will be held from 12:00 PM to 4:00 PM. All attendees are requested to arrive on time.</p>
+        <p>The Freshers Party will be held from 12:30 PM to 5:30 PM. All attendees are requested to arrive on time.</p>
 
         <h4>Alcohol and Intoxication</h4>
         <ul>
@@ -1196,6 +1231,7 @@
 <footer>
   <p>© 2026 Roar 2K26. All Rights Reserved.</p>
   <p>An <a href="https://ngit.ac.in/" target="_blank" rel="noopener noreferrer" style="color:var(--green);text-decoration:none"><b>NGIT</b></a> ✕ <a href="https://kmec.in/" target="_blank" rel="noopener noreferrer" style="color:var(--yellow);text-decoration:none"><b>KMEC</b></a> Event.</p>
+  <p style="font-size:11px;color:var(--muted);opacity:.7;margin-top:6px">Not an official event. The college management has no involvement in organizing or endorsing it.</p>
   <p>Crafted by <a href="https://kravagroup.co.in" target="_blank" rel="noopener noreferrer" style="color:var(--green);text-decoration:none">Krava Group</a>.</p>
 </footer>
 
@@ -1313,7 +1349,7 @@ const CONFIG = Object.freeze({
   UPI_ID: "9502614934-2@axl",         // UPI ID
   PAYEE_NAME: "Amith Vaivasvath Chitturi",
   TICKET_PRICE: 1300,                 // per pass, INR (set your real price)
-  EVENT_START: "2026-11-15T12:00:00+05:30",
+  EVENT_START: "2026-11-15T12:30:00+05:30",
   YOUTUBE_VIDEO_ID: "rnAaDqA9QL4",
   // Security settings
   MAX_SCREENSHOT_BYTES: 2700000,     // ~2.7MB max screenshot
@@ -1905,7 +1941,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#000;padding:4
 <div class="row"><span>Status</span><span class="status" style="color:${order.verified ? '#16a34a' : '#dc2626'}">${order.verified ? '✅ Auto-Approved' : '❌ Not Verified'}</span></div>
 </div>
 <div class="event">
-📅 15 November 2026 &nbsp;|&nbsp; 🕐 12:00 PM – 4:00 PM<br>
+📅 15 November 2026 &nbsp;|&nbsp; 🕐 12:30 PM – 5:30 PM<br>
 📍 Open Your Mouth, Banjara Hills, Hyderabad<br>
 🚫 Alcohol Strictly Prohibited &nbsp;|&nbsp; 🔞 18+ Only
 </div>
@@ -2043,6 +2079,41 @@ function updateFab() {
 
 /* Old Web Audio music player removed — YouTube IFrame API player is above */
 
+/* ═══════════════════════════════════════════════════════
+   SCROLL POPUP — "Passes Filling Fast" urgency
+   Shows once when user scrolls past 40% of the page
+   ═══════════════════════════════════════════════════════ */
+(function() {
+  var popupShown = false;
+  var overlay = document.getElementById("scrollPopupOverlay");
+  var popup = document.getElementById("scrollPopup");
+  var closeBtn = document.getElementById("scrollPopupClose");
+  var ctaBtn = document.getElementById("scrollPopupCTA");
+  if (!overlay || !popup) return;
+
+  function showPopup() {
+    if (popupShown) return;
+    popupShown = true;
+    overlay.classList.add("show");
+    popup.classList.add("show");
+  }
+  function hidePopup() {
+    overlay.classList.remove("show");
+    popup.classList.remove("show");
+  }
+
+  window.addEventListener("scroll", function() {
+    if (popupShown) return;
+    var scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+    if (scrollPct > 0.35) showPopup();
+  }, { passive: true });
+
+  if (closeBtn) closeBtn.addEventListener("click", hidePopup);
+  if (overlay) overlay.addEventListener("click", hidePopup);
+  if (ctaBtn) ctaBtn.addEventListener("click", function() {
+    hidePopup();
+  });
+})();
 
 </script>
 </body>
