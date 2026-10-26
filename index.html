@@ -1400,6 +1400,17 @@ const CONFIG = Object.freeze({
   UPI_ID: "shivudu.y@ibl",            // UPI ID (handle-style, not phone-based)
   PAYEE_NAME: "YEERAM SHIVUDU",
   PAYEE_PHONE: "9848536194",          // Shown + copyable on the pay screen
+  // ─── MERCHANT FIELDS ───
+  // Without these, GPay/PhonePe treat the intent as personal P2P and
+  // the risk engine declines it ("payment declined for security reasons").
+  // Set MERCHANT_MCC to the 4-digit MCC your PhonePe Business account is
+  // registered under. Common defaults:
+  //   5812 = Eating places / restaurants
+  //   7922 = Theatrical producers / ticket agencies
+  //   8299 = Schools and educational services
+  //   5999 = Miscellaneous retail
+  // Confirm the actual value with the PhonePe Business dashboard.
+  MERCHANT_MCC: "5812",
   TICKET_PRICE: 1300,                 // per pass, INR (set your real price)
   EVENT_START: "2026-11-15T12:30:00+05:30",
   YOUTUBE_VIDEO_ID: "rnAaDqA9QL4",
@@ -1641,8 +1652,16 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
   // for the deep link; the full `order.ref` is still what we store,
   // email, and verify server-side.
   const shortNote = "ROAR" + timestamp.toString(36).toUpperCase().slice(-6);
+  // Transaction reference for merchant intent: UPI spec requires alphanumeric
+  // 1-35 chars with no separators. Strip the "-" from the booking ref so the
+  // same identifier reconciles cleanly against the sheet row.
+  const txnRef = order.ref.replace(/[^A-Za-z0-9]/g, "").slice(0, 35);
+  // Merchant-flagged intent — mc + tr tell the payer app this is a merchant
+  // collect (not personal P2P), bypassing GPay's "payment declined for
+  // security reasons" risk screen for first-time payers.
   const upiUri = `upi://pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}` +
-                 `&am=${amount}&cu=INR&tn=${encodeURIComponent(shortNote)}`;
+                 `&am=${amount}&cu=INR&mc=${CONFIG.MERCHANT_MCC}&tr=${encodeURIComponent(txnRef)}` +
+                 `&tn=${encodeURIComponent(shortNote)}`;
   document.getElementById("payAmt").textContent = "₹" + amount;
   document.getElementById("payeeName").textContent = CONFIG.PAYEE_NAME;
   document.getElementById("upiId").textContent = CONFIG.UPI_ID;
@@ -1696,9 +1715,12 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
 
   // Set up UPI app deep links
   const appLinks = {
-    gpay: `tez://upi/pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent(shortNote)}`,
-    phonepe: `phonepe://pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent(shortNote)}`,
-    paytm: `paytm://pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent(shortNote)}`,
+    // Each per-app deep link carries the same merchant payload as the generic
+    // upiUri — if mc/tr are missing on one of these, GPay/PhonePe fall back
+    // to P2P risk screening on just that app's path.
+    gpay: `tez://upi/pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}&am=${amount}&cu=INR&mc=${CONFIG.MERCHANT_MCC}&tr=${encodeURIComponent(txnRef)}&tn=${encodeURIComponent(shortNote)}`,
+    phonepe: `phonepe://pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}&am=${amount}&cu=INR&mc=${CONFIG.MERCHANT_MCC}&tr=${encodeURIComponent(txnRef)}&tn=${encodeURIComponent(shortNote)}`,
+    paytm: `paytm://pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}&am=${amount}&cu=INR&mc=${CONFIG.MERCHANT_MCC}&tr=${encodeURIComponent(txnRef)}&tn=${encodeURIComponent(shortNote)}`,
     bhim: upiUri,
     amazonpay: upiUri,
     generic: upiUri
