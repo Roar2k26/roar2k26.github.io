@@ -1156,22 +1156,17 @@
 
     <!-- Step 4: QR + screenshot upload -->
     <div class="step-card hidden" id="stepPay">
-      <h3>Scan &amp; Pay</h3>
+      <h3>Pay manually</h3>
       <div id="payTimer" class="pay-timer">
         <span class="timer-icon">⏱</span>
         <span>Complete payment within </span>
         <b id="payTimerCount">07:00</b>
       </div>
       <p class="pay-note">Amount to pay: <b id="payAmt" style="color:var(--green)"></b></p>
-      <div class="qr-wrap"><a id="qrLink" href="#"><img id="qrImg" alt="UPI QR code to pay"><span class="qr-hint">TAP QR TO PAY</span></a></div>
-      <p class="pay-note">Scan with any UPI app, or tap an app below to pay directly.</p>
       <p class="pay-note">Pay to <b id="payeeName"></b></p>
 
-      <!-- Tap-to-copy payment details — critical fallback when PhonePe/GPay
-           show "declined for security" on deep-link payments. The user can
-           copy the UPI ID or phone number and paste it into their app's
-           "Pay to UPI ID / mobile" screen, which bypasses the deep-link
-           velocity check. -->
+      <!-- Manual-pay copy buttons. Tap to copy the UPI ID or mobile, then
+           paste into your UPI app's "Pay to UPI ID / mobile" screen. -->
       <div class="copy-row">
         <button type="button" class="copy-btn" id="copyUpiBtn" data-copy="upi">
           <span class="copy-label">UPI ID</span>
@@ -1185,43 +1180,15 @@
         </button>
       </div>
 
-      <details class="pay-help">
-        <summary>Payment declined "for security reasons"? Tap here.</summary>
+      <details class="pay-help" open>
+        <summary>How to pay</summary>
         <ol>
           <li>Tap <b>UPI ID</b> or <b>Mobile</b> above to copy.</li>
           <li>Open your UPI app (PhonePe / GPay / Paytm) and choose <b>"Pay to UPI ID"</b> or <b>"Pay to Mobile Number"</b>.</li>
-          <li>Paste what you copied, enter ₹1300, and complete the payment.</li>
-          <li>Come back here and upload the screenshot.</li>
+          <li>Paste what you copied, enter <b>₹1300</b>, and complete the payment.</li>
+          <li>Come back here, enter the UTR number, and upload the screenshot.</li>
         </ol>
-        <p>Manual payments bypass the deep-link security check and go through reliably.</p>
       </details>
-
-      <div class="upi-apps" id="upiApps">
-        <a class="upi-app" data-app="gpay" href="#">
-          <div class="app-icon" style="background:linear-gradient(135deg,#4285F4,#34A853)">G</div>
-          <span>Google Pay</span>
-        </a>
-        <a class="upi-app" data-app="phonepe" href="#">
-          <div class="app-icon" style="background:#5f259f">₱</div>
-          <span>PhonePe</span>
-        </a>
-        <a class="upi-app" data-app="paytm" href="#">
-          <div class="app-icon" style="background:linear-gradient(135deg,#00BAF2,#0084B4)">P</div>
-          <span>Paytm</span>
-        </a>
-        <a class="upi-app" data-app="bhim" href="#">
-          <div class="app-icon" style="background:linear-gradient(135deg,#00897B,#004D40)">B</div>
-          <span>BHIM</span>
-        </a>
-        <a class="upi-app" data-app="amazonpay" href="#">
-          <div class="app-icon" style="background:linear-gradient(135deg,#FF9900,#FF6600)">A</div>
-          <span>Amazon Pay</span>
-        </a>
-        <a class="upi-app" data-app="generic" href="#">
-          <div class="app-icon" style="background:linear-gradient(135deg,#3ddc97,#1a8a5a)">⋯</div>
-          <span>Other UPI</span>
-        </a>
-      </div>
 
       <label style="margin-top:18px">Transaction / UTR Number <input type="text" id="utrInput" required placeholder="Auto-filled from screenshot or enter manually"></label>
       <div id="ocrStatus" class="ocr-status" style="display:none"></div>
@@ -1286,7 +1253,6 @@
   <p>Crafted by <a href="https://kravagroup.co.in" target="_blank" rel="noopener noreferrer" style="color:var(--green);text-decoration:none">Krava Group</a>.</p>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════
    TOAST NOTIFICATION — replaces alert() for mobile UX
@@ -1396,22 +1362,14 @@ window.scrollTo(0, 0);
    CONFIG (frozen to prevent tampering via console)
    ═══════════════════════════════════════════════════════ */
 const CONFIG = Object.freeze({
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx0C4xHWpa6IUjn-02FuFPIS1wIDdoBpDjugqJyqRagA6CnpZlqat3V8X8QUzsHchpNUQ/exec",
-  UPI_ID: "Q71294071@ybl",            // PhonePe Business merchant VPA (Q-prefix = PhonePe QR merchant)
-  PAYEE_NAME: "SHIVAMANI KIRANA GENERAL STORE",
-  PAYEE_PHONE: "9848536194",          // Shown + copyable on the pay screen
-  // ─── MERCHANT FIELDS ───
-  // Without these, GPay/PhonePe treat the intent as personal P2P and
-  // the risk engine declines it ("payment declined for security reasons").
-  // Set MERCHANT_MCC to the 4-digit MCC your PhonePe Business account is
-  // registered under. Common defaults:
-  //   5411 = Grocery stores / supermarkets (Kirana) ← matches current merchant
-  //   5812 = Eating places / restaurants
-  //   7922 = Theatrical producers / ticket agencies
-  //   8299 = Schools and educational services
-  //   5999 = Miscellaneous retail
-  // Confirm the actual value with the PhonePe Business dashboard.
-  MERCHANT_MCC: "5411",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxWCPbtSfzjPVgXH7McByaZLfk_EwA9rVuc8R3h4E4B5pyGCzOMPZU-iM5i6P9CL_EdAQ/exec",
+  UPI_ID: "9502614934-2@axl",         // Personal UPI ID (manual-pay only)
+  PAYEE_NAME: "Amith Vaivasvath Chitturi",
+  PAYEE_PHONE: "9502614934",          // Shown + copyable on the pay screen
+  // No MERCHANT_MCC / deep links — the pay screen is manual-entry only.
+  // The user copies the UPI ID or phone number, pastes it into their own
+  // UPI app's "Pay to UPI ID / mobile" screen, and completes payment there.
+  // This bypasses the P2P deep-link security screen on GPay/PhonePe.
   TICKET_PRICE: 1300,                 // per pass, INR (set your real price)
   EVENT_START: "2026-11-15T12:30:00+05:30",
   YOUTUBE_VIDEO_ID: "rnAaDqA9QL4",
@@ -1565,8 +1523,6 @@ function validateScreenshot(file) {
   });
 })();
 
-/* ── QR Code: loaded via CDN (qrcode-generator 1.4.4) ── */
-
 /* Mobile menu */
 const menuBtn = document.getElementById("menuBtn");
 const navList = document.getElementById("navList");
@@ -1653,22 +1609,17 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
   // for the deep link; the full `order.ref` is still what we store,
   // email, and verify server-side.
   const shortNote = "ROAR" + timestamp.toString(36).toUpperCase().slice(-6);
-  // Transaction reference for merchant intent: UPI spec requires alphanumeric
-  // 1-35 chars with no separators. Strip the "-" from the booking ref so the
-  // same identifier reconciles cleanly against the sheet row.
-  const txnRef = order.ref.replace(/[^A-Za-z0-9]/g, "").slice(0, 35);
-  // Merchant-flagged intent — mc + tr tell the payer app this is a merchant
-  // collect (not personal P2P), bypassing GPay's "payment declined for
-  // security reasons" risk screen for first-time payers.
-  const upiUri = `upi://pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}` +
-                 `&am=${amount}&cu=INR&mc=${CONFIG.MERCHANT_MCC}&tr=${encodeURIComponent(txnRef)}` +
-                 `&tn=${encodeURIComponent(shortNote)}`;
+  // Manual-pay only: no UPI deep links, no QR. The user copies the UPI ID
+  // or mobile number and pays from inside their own UPI app.
+  // (shortNote is kept — the user is encouraged to put it in the payment
+  //  note so hosts can reconcile easier, though reconciliation is primarily
+  //  driven by UTR + screenshot OCR.)
+  void shortNote;
   document.getElementById("payAmt").textContent = "₹" + amount;
   document.getElementById("payeeName").textContent = CONFIG.PAYEE_NAME;
   document.getElementById("upiId").textContent = CONFIG.UPI_ID;
 
-  // The UPI ID is a PhonePe Business merchant VPA (Q71294071@ybl) —
-  // the phone is carried separately in CONFIG.PAYEE_PHONE.
+  // Payer-visible phone comes from CONFIG.PAYEE_PHONE.
   const payeePhoneDigits = CONFIG.PAYEE_PHONE;
   const payeePhoneFmt = payeePhoneDigits.length === 10
     ? "+91 " + payeePhoneDigits.slice(0, 5) + " " + payeePhoneDigits.slice(5)
@@ -1714,74 +1665,12 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
   wireCopyBtn("copyUpiBtn", CONFIG.UPI_ID, "UPI ID");
   wireCopyBtn("copyPhoneBtn", payeePhoneDigits, "Mobile number");
 
-  // Set up UPI app deep links
-  const appLinks = {
-    // Each per-app deep link carries the same merchant payload as the generic
-    // upiUri — if mc/tr are missing on one of these, GPay/PhonePe fall back
-    // to P2P risk screening on just that app's path.
-    gpay: `tez://upi/pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}&am=${amount}&cu=INR&mc=${CONFIG.MERCHANT_MCC}&tr=${encodeURIComponent(txnRef)}&tn=${encodeURIComponent(shortNote)}`,
-    phonepe: `phonepe://pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}&am=${amount}&cu=INR&mc=${CONFIG.MERCHANT_MCC}&tr=${encodeURIComponent(txnRef)}&tn=${encodeURIComponent(shortNote)}`,
-    paytm: `paytm://pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}&am=${amount}&cu=INR&mc=${CONFIG.MERCHANT_MCC}&tr=${encodeURIComponent(txnRef)}&tn=${encodeURIComponent(shortNote)}`,
-    bhim: upiUri,
-    amazonpay: upiUri,
-    generic: upiUri
-  };
-  // App display names for tracking
-  const appNames = {
-    gpay: "Google Pay", phonepe: "PhonePe", paytm: "Paytm",
-    bhim: "BHIM", amazonpay: "Amazon Pay", generic: "Other UPI"
-  };
-  document.querySelectorAll(".upi-app").forEach(btn => {
-    const app = btn.dataset.app;
-    btn.href = appLinks[app] || upiUri;
-    btn.addEventListener("click", function() {
-      // Record which UPI app was selected
-      if (order) order.mode = "UPI - " + (appNames[app] || app);
-      // Highlight selected app
-      document.querySelectorAll(".upi-app").forEach(b => b.style.borderColor = "");
-      this.style.borderColor = "var(--green)";
-    });
-  });
-  // Make QR image tappable — opens generic UPI intent on mobile
-  document.getElementById("qrLink").href = upiUri;
-  document.getElementById("qrLink").addEventListener("click", function() {
-    if (order) order.mode = "UPI - QR Scan";
-  });
-
-  // Generate QR code client-side (no external API dependency)
-  (function generateQR() {
-    const img = document.getElementById("qrImg");
-    try {
-      if (typeof qrcode === "function") {
-        const qr = qrcode(0, "L");
-        qr.addData(upiUri);
-        qr.make();
-        // Render to canvas for high-res data URL
-        const mods = qr.getModuleCount();
-        const cell = Math.max(4, Math.floor(280 / mods));
-        const margin = 8;
-        const total = mods * cell + margin * 2;
-        const c = document.createElement("canvas");
-        c.width = c.height = total;
-        const ctx = c.getContext("2d");
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, total, total);
-        ctx.fillStyle = "#000000";
-        for (let r = 0; r < mods; r++)
-          for (let co = 0; co < mods; co++)
-            if (qr.isDark(r, co))
-              ctx.fillRect(margin + co * cell, margin + r * cell, cell, cell);
-        img.src = c.toDataURL("image/png");
-      } else {
-        throw new Error("qrcode lib not loaded");
-      }
-    } catch(e) {
-      // Fallback: external API if client-side fails
-      img.src = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=" + encodeURIComponent(upiUri) + "&format=png&margin=8";
-    }
-    img.alt = "UPI QR - Pay \u20b9" + amount + " to " + CONFIG.PAYEE_NAME;
-  })();
+  // Manual-pay flow: no app deep links, no QR, no app launchers.
+  // Payment mode is logged as "UPI - Manual" so sheet reconciliation
+  // reflects reality.
+  if (order) order.mode = "UPI - Manual";
   showStep("stepPay");
+
 
   // ── PAYMENT TIMER (7 minutes) ──
   const PAY_TIMEOUT_SEC = 7 * 60; // 7 minutes
