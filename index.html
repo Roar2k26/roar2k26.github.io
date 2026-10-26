@@ -1180,7 +1180,7 @@
       <div class="upload">
         <strong style="font-size:14px">Upload your payment screenshot</strong>
         <p class="pay-note" style="font-size:12px;margin:4px 0 8px">UTR number will be auto-extracted from your screenshot</p>
-        <input type="file" id="shot" accept="image/png,image/jpeg,image/jpg,image/webp" capture="environment">
+        <input type="file" id="shot" accept="image/jpeg,image/png,image/webp" capture="environment">
         <img id="preview" class="hidden" alt="Payment screenshot preview">
       </div>
       <div class="btn-row" style="margin-top:18px">
@@ -1347,7 +1347,7 @@ window.scrollTo(0, 0);
    CONFIG (frozen to prevent tampering via console)
    ═══════════════════════════════════════════════════════ */
 const CONFIG = Object.freeze({
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwoWU76a4R_UXxIcmqRvfuAqGLb8oZ9YQF-dz7f7PKn9H3rooEyJiSmUTWGWeF107I0/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycby-HiT-7ljJ4LtQwzkRoBllh4lxigAmcWcXdbhH60WyXw-RJRb1TmNtecqnuw151705/exec",
   UPI_ID: "9502614934-2@axl",         // UPI ID
   PAYEE_NAME: "Amith Vaivasvath Chitturi",
   TICKET_PRICE: 1300,                 // per pass, INR (set your real price)
@@ -1367,10 +1367,15 @@ const CONFIG = Object.freeze({
    ═══════════════════════════════════════════════════════ */
 function sanitize(str) {
   if (typeof str !== "string") return "";
-  // Strip null bytes, control chars, and HTML entities
+  // Strip null bytes, control chars, HTML tags, and dangerous chars.
+  // We STRIP (not entity-encode) so emails + sheet cells show the plain
+  // apostrophe in names like D'Souza instead of "D&#x27;Souza". The server
+  // sanitizes again before storage/email; HTML output is always escaped by
+  // the renderer, so no double-encoding is needed here.
   return str
     .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")  // strip control chars
-    .replace(/[<>"'&]/g, c => ({"<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#x27;","&":"&amp;"})[c] || c)
+    .replace(/<[^>]*>/g, "")                            // strip HTML tags
+    .replace(/[<>"`\\]/g, "")                           // strip HTML-dangerous chars (keep ' & for names)
     .trim()
     .slice(0, CONFIG.MAX_INPUT_LENGTH);
 }
@@ -1408,18 +1413,15 @@ function validateRoll(roll) {
 }
 
 /* ═══════════════════════════════════════════════════════
-   SECURITY LAYER 3: Payload integrity (HMAC)
+   SECURITY LAYER 3: Payload integrity
+   ───────────────────────────────────────────────────────
+   Removed. A client-computed SHA-256 of the payload adds no real
+   integrity guarantee (an attacker who crafts a payload can also
+   craft its hash), and the server was not verifying it anyway.
+   The real defence is server-side authority: the Apps Script now
+   HARD-OVERRIDES the amount with its own TICKET_PRICE constant,
+   so a tampered `amount` cannot affect what gets stored or billed.
    ═══════════════════════════════════════════════════════ */
-async function computePayloadHash(payload) {
-  // SHA-256 hash of the payload to detect tampering in transit
-  const data = JSON.stringify({
-    ref: payload.ref, name: payload.name, email: payload.email,
-    amount: payload.amount, utr: payload.utr, ts: payload.timestamp
-  });
-  const encoded = new TextEncoder().encode(data);
-  const hash = await crypto.subtle.digest("SHA-256", encoded);
-  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, "0")).join("");
-}
 
 /* ═══════════════════════════════════════════════════════
    SECURITY LAYER 4: Rate limiter (per-action, per-window)
@@ -1441,10 +1443,15 @@ const RateLimit = (() => {
    ═══════════════════════════════════════════════════════ */
 function validateScreenshot(file) {
   if (!file) return { valid: false, reason: "No file selected" };
-  // Check file type (MIME)
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+  // Only accept image types that:
+  //   (a) the magic-byte verifier can confirm, AND
+  //   (b) the <canvas> compression pipeline can decode.
+  // HEIC/HEIF fail both — iOS automatically converts them to JPEG on
+  // upload when the <input accept="…"> list excludes them, so dropping
+  // them here is the correct fix, not a regression.
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
   if (!allowedTypes.includes(file.type.toLowerCase())) {
-    return { valid: false, reason: "Invalid file type. Only JPEG, PNG, WebP images are accepted." };
+    return { valid: false, reason: "Invalid file type. Please upload a JPEG, PNG, or WebP screenshot." };
   }
   // Check file size (max 10MB raw, will be compressed)
   if (file.size > 10 * 1024 * 1024) {
@@ -1452,8 +1459,8 @@ function validateScreenshot(file) {
   }
   // Check file extension
   const ext = file.name.split(".").pop().toLowerCase();
-  if (!["jpg", "jpeg", "png", "webp", "heic", "heif"].includes(ext)) {
-    return { valid: false, reason: "Invalid file extension." };
+  if (!["jpg", "jpeg", "png", "webp"].includes(ext)) {
+    return { valid: false, reason: "Invalid file extension. Please upload .jpg, .png, or .webp." };
   }
   return { valid: true };
 }
@@ -1573,7 +1580,11 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
     consent: true,
     consentTime: new Date().toISOString(),
     timestamp: timestamp,
-    ref: "R26" + timestamp.toString(36).toUpperCase()
+    // Timestamp alone collides if two clicks land in the same ms;
+    // append 4 random base36 chars (~1.6M possibilities) to make
+    // intra-ms collisions effectively impossible.
+    ref: "R26" + timestamp.toString(36).toUpperCase() + "-" +
+         Math.random().toString(36).slice(2, 6).toUpperCase()
   };
   const upiUri = `upi://pay?pa=${encodeURIComponent(CONFIG.UPI_ID)}&pn=${encodeURIComponent(CONFIG.PAYEE_NAME)}` +
                  `&am=${amount}&cu=INR&tn=${encodeURIComponent(order.ref)}`;
@@ -1674,12 +1685,18 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
     }
   }
 
+  // If a previous pay-step entry left an interval running, kill it first
+  if (window._payTimerInterval) {
+    clearInterval(window._payTimerInterval);
+    window._payTimerInterval = null;
+  }
   payTimerInterval = setInterval(updatePayTimer, 1000);
   updatePayTimer();
 
-  // Store on window so submit handler can access
+  // Store on window so submit handler can access + clear later
   window._payTimerStart = payTimerStart;
   window._payInitiatedISO = payInitiatedISO;
+  window._payTimerInterval = payTimerInterval;
 });
 
 /* ── Tesseract.js: lazy-load for OCR ── */
@@ -1843,9 +1860,6 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
       uploadedAt: new Date().toISOString()
     };
 
-    // ── COMPUTE INTEGRITY HASH ──
-    payload.integrityHash = await computePayloadHash(payload);
-
     const resp = await fetch(CONFIG.APPS_SCRIPT_URL, {
       method: "POST", redirect: "follow",
       headers: { "Content-Type": "text/plain" },
@@ -1866,7 +1880,19 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
       verified = !!j.verified;
     } catch(_){}
   } catch (err) {
-    /* Submit error suppressed */
+    // Network / fetch failure — the button must be re-enabled or the user
+    // is stranded with no way to retry. Toast the problem, re-enable, and
+    // bail out without showing a false receipt.
+    showToast("Could not reach the booking server. Check your connection and try again.", "warn");
+    btn.disabled = false;
+    btn.textContent = "SUBMIT PAYMENT SCREENSHOT";
+    return;
+  }
+  // Submission succeeded — stop the payment countdown so it doesn't keep
+  // ticking in the background after we leave the pay step.
+  if (window._payTimerInterval) {
+    clearInterval(window._payTimerInterval);
+    window._payTimerInterval = null;
   }
   showReceipt(verified);
 });
@@ -1895,7 +1921,7 @@ function showReceipt(verified) {
   // Build Google Calendar link
   const calUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE" +
     "&text=" + encodeURIComponent("ROAR2K26 - Freshers' Event") +
-    "&dates=20261115T063000Z/20261115T103000Z" +
+    "&dates=20261115T070000Z/20261115T120000Z" +
     "&details=" + encodeURIComponent("ROAR2K26 Freshers Event | Ref: " + order.ref + " | Amount: ₹" + order.amount + " | Alcohol-free, 18+ only") +
     "&location=" + encodeURIComponent("Open Your Mouth, Road No 12, NBT Nagar, Banjara Hills, Hyderabad, Telangana 500034") +
     "&sf=true&output=xml";
@@ -1982,10 +2008,14 @@ let userGestured = false;
   document.head.appendChild(tag);
 })();
 
-function onYouTubeIframeAPIReady() {
+// Explicitly bind on window so the YouTube IFrame API can call it back
+// regardless of script execution order (hoisted function declarations
+// are safe here, but the YT loader looks it up on `window` by name — be
+// defensive against future module/strict-mode changes).
+window.onYouTubeIframeAPIReady = function onYouTubeIframeAPIReady() {
   ytAPIReady = true;
   createPlayer();        // create muted player right away — browsers allow this
-}
+};
 
 function createPlayer() {
   if (ytPlayer) return;
