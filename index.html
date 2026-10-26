@@ -1396,21 +1396,22 @@ window.scrollTo(0, 0);
    CONFIG (frozen to prevent tampering via console)
    ═══════════════════════════════════════════════════════ */
 const CONFIG = Object.freeze({
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyZEz5Zrud27gV_kIZpthnD_uIkeLezpP3YyGUZ1rLW7z7KAoe13zMwnoG9ijpzsqGLAg/exec",
-  UPI_ID: "shivudu.y@ibl",            // UPI ID (handle-style, not phone-based)
-  PAYEE_NAME: "YEERAM SHIVUDU",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx0C4xHWpa6IUjn-02FuFPIS1wIDdoBpDjugqJyqRagA6CnpZlqat3V8X8QUzsHchpNUQ/exec",
+  UPI_ID: "Q71294071@ybl",            // PhonePe Business merchant VPA (Q-prefix = PhonePe QR merchant)
+  PAYEE_NAME: "SHIVAMANI KIRANA GENERAL STORE",
   PAYEE_PHONE: "9848536194",          // Shown + copyable on the pay screen
   // ─── MERCHANT FIELDS ───
   // Without these, GPay/PhonePe treat the intent as personal P2P and
   // the risk engine declines it ("payment declined for security reasons").
   // Set MERCHANT_MCC to the 4-digit MCC your PhonePe Business account is
   // registered under. Common defaults:
+  //   5411 = Grocery stores / supermarkets (Kirana) ← matches current merchant
   //   5812 = Eating places / restaurants
   //   7922 = Theatrical producers / ticket agencies
   //   8299 = Schools and educational services
   //   5999 = Miscellaneous retail
   // Confirm the actual value with the PhonePe Business dashboard.
-  MERCHANT_MCC: "5999",
+  MERCHANT_MCC: "5411",
   TICKET_PRICE: 1300,                 // per pass, INR (set your real price)
   EVENT_START: "2026-11-15T12:30:00+05:30",
   YOUTUBE_VIDEO_ID: "rnAaDqA9QL4",
@@ -1666,8 +1667,8 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
   document.getElementById("payeeName").textContent = CONFIG.PAYEE_NAME;
   document.getElementById("upiId").textContent = CONFIG.UPI_ID;
 
-  // The new UPI ID is a handle (shivudu.y@ibl), not phone-based, so the
-  // phone is carried separately in CONFIG.PAYEE_PHONE.
+  // The UPI ID is a PhonePe Business merchant VPA (Q71294071@ybl) —
+  // the phone is carried separately in CONFIG.PAYEE_PHONE.
   const payeePhoneDigits = CONFIG.PAYEE_PHONE;
   const payeePhoneFmt = payeePhoneDigits.length === 10
     ? "+91 " + payeePhoneDigits.slice(0, 5) + " " + payeePhoneDigits.slice(5)
