@@ -381,6 +381,8 @@
   .pay-help ol li{margin-bottom:4px}
   .pay-help ol b{color:var(--text)}
   .pay-help p{margin:8px 0 12px;color:var(--muted);font-size:12px;font-style:italic}
+  .pay-help .pay-warn{margin:10px -6px 10px;padding:10px 12px;background:#1c1207;border:1px solid var(--red);border-left-width:3px;border-radius:8px;color:#ffd4d8;font-size:12.5px;font-style:normal;line-height:1.5}
+  .pay-help .pay-warn b{color:#fff}
   .upload{margin-top:18px;border:1px dashed var(--green);border-radius:10px;padding:14px;background:#000}
   .upi-apps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
   .upi-app{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border:1px solid #2a2a2a;border-radius:10px;background:#111;text-decoration:none;color:var(--text);font-size:11px;font-weight:600;letter-spacing:.5px;transition:all .2s;cursor:pointer}
@@ -1188,6 +1190,7 @@
           <li>Paste what you copied, enter <b>₹1300</b>, and complete the payment.</li>
           <li>Come back here, enter the UTR number, and upload the screenshot.</li>
         </ol>
+        <p class="pay-warn">⚠️ <b>Upload only your own fresh screenshot.</b> Reused, duplicate, or edited images are auto-rejected.</p>
       </details>
 
       <label style="margin-top:18px">Transaction / UTR Number <input type="text" id="utrInput" required placeholder="Auto-filled from screenshot or enter manually"></label>
@@ -1196,7 +1199,11 @@
       <div class="upload">
         <strong style="font-size:14px">Upload your payment screenshot</strong>
         <p class="pay-note" style="font-size:12px;margin:4px 0 8px">UTR number will be auto-extracted from your screenshot</p>
-        <input type="file" id="shot" accept="image/jpeg,image/png,image/webp" capture="environment">
+        <!-- No `capture` attribute: with it, Android/iOS skip the Camera/Photos/
+             Files chooser and launch the camera directly. Removing it brings
+             back the normal picker so users can pick an existing screenshot
+             from Photos or Files (which is what they actually need). -->
+        <input type="file" id="shot" accept="image/jpeg,image/png,image/webp">
         <img id="preview" class="hidden" alt="Payment screenshot preview">
       </div>
       <div class="btn-row" style="margin-top:18px">
