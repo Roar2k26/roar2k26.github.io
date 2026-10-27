@@ -1151,7 +1151,7 @@
         </label>
         <div class="btn-row" style="margin-top:18px">
           <button class="btn ghost" type="button" id="btnBackToTerms">GO BACK</button>
-          <button class="btn red" type="button" id="btnContinuePay">CONTINUE TO PAYMENT QR</button>
+          <button class="btn red" type="button" id="btnContinuePay">CONTINUE TO PAYMENT</button>
         </div>
       </form>
     </div>
@@ -1510,9 +1510,14 @@ function validateScreenshot(file) {
   // Prevent drag-and-drop data exfiltration
   document.addEventListener("dragstart", e => e.preventDefault());
 
-  // Block right-click on sensitive areas (payment, receipt, forms)
+  // Block right-click on sensitive areas (payment, receipt, forms).
+  // Guard against non-Element targets (Text nodes dispatched by the browser
+  // on label/checkbox interactions) — Text nodes don't have .closest(),
+  // which previously threw "e.target.closest is not a function" when the
+  // user tapped the consent checkbox's label.
   document.addEventListener("contextmenu", e => {
-    if (e.target.closest("#stepPay, #stepReceipt, .receipt, #stepDetails, #stepTerms")) {
+    const el = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+    if (el && el.closest && el.closest("#stepPay, #stepReceipt, .receipt, #stepDetails, #stepTerms")) {
       e.preventDefault();
     }
   });
@@ -1524,9 +1529,13 @@ function validateScreenshot(file) {
     if (e.key === "F12") e.preventDefault();
   });
 
-  // Block text selection on sensitive data (UPI ID, payee info)
+  // Block text selection on sensitive data (UPI ID, payee info). Same
+  // Text-node guard as the contextmenu handler above — otherwise tapping
+  // the consent label (which wraps a Text node) crashed with
+  // "e.target.closest is not a function".
   document.addEventListener("selectstart", e => {
-    if (e.target.closest(".pay-note, .receipt")) e.preventDefault();
+    const el = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+    if (el && el.closest && el.closest(".pay-note, .receipt")) e.preventDefault();
   });
 })();
 
@@ -1571,7 +1580,30 @@ document.getElementById("btnToTerms").onclick = () => showStep("stepTerms");
 document.getElementById("btnBack").onclick = () => showStep("stepPass");
 document.getElementById("btnAgree").onclick = () => showStep("stepDetails");
 document.getElementById("btnBackToTerms").onclick = () => showStep("stepTerms");
-document.getElementById("btnBackToDetails").onclick = () => showStep("stepDetails");
+document.getElementById("btnBackToDetails").onclick = () => {
+  // User is bailing on this payment attempt → wipe every scrap of pay-step
+  // state so a fresh attempt genuinely starts fresh:
+  //   • UTR text input      → cleared + placeholder visible again
+  //   • Screenshot file     → the <input type="file"> is reset
+  //   • Compressed base64   → cleared
+  //   • Image preview       → hidden
+  //   • OCR status banner   → hidden + reset
+  //   • Submit button       → re-enabled (if a previous submit left it disabled)
+  //   • Pay timer           → stopped (will restart cleanly on next entry)
+  var utr = document.getElementById("utrInput");
+  if (utr) utr.value = "";
+  var shot = document.getElementById("shot");
+  if (shot) shot.value = "";
+  var preview = document.getElementById("preview");
+  if (preview) { preview.src = ""; preview.classList.add("hidden"); }
+  shotData = null;
+  var ocrStatus = document.getElementById("ocrStatus");
+  if (ocrStatus) { ocrStatus.style.display = "none"; ocrStatus.innerHTML = ""; ocrStatus.className = "ocr-status"; }
+  var submitBtn = document.getElementById("submitBtn");
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "SUBMIT PAYMENT SCREENSHOT"; }
+  if (window._payTimerInterval) { clearInterval(window._payTimerInterval); window._payTimerInterval = null; }
+  showStep("stepDetails");
+};
 
 let order = {};
 let shotData = null;   // compressed screenshot as base64 JPEG (no prefix)
