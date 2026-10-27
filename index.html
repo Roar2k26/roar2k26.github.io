@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ROAR2K26 | Freshers Night · Open Your Mouth</title>
-<meta name="description" content="ROAR2K26 Freshers' event at Open Your Mouth, 15 November 2026, 12:30 PM to 5:30 PM. Alcohol-free, 18+ only.">
+<meta name="description" content="ROAR2K26 Freshers' event at Open Your Mouth, 15 November 2026, 12:30 PM to 5:30 PM. Alcohol-free event.">
 <!-- ═══════════════════════════════════════════════════════
      SECURITY: CSP, X-Frame-Options, and Permissions-Policy
      are commented out here because meta-tag CSP conflicts
@@ -973,7 +973,7 @@
       <a class="btn red" href="#pass">BOOK PASS</a>
       <a class="btn" href="#location">FIND VENUE</a>
     </div>
-    <div class="alcohol">🚫 Alcohol Strictly Prohibited · 18+ only</div>
+    <div class="alcohol">🚫 Alcohol Strictly Prohibited</div>
   </div>
 </header>
 
@@ -1048,7 +1048,7 @@
         <h3>Open Your Mouth</h3>
         <p>📅 15 November 2026</p>
         <p>⏰ 12:30 PM – 5:30 PM</p>
-        <p>🔞 18+ only · 🚫 No alcohol</p>
+        <p>🚫 No alcohol</p>
         <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Open+Your+Mouth+Hyderabad" target="_blank" rel="noopener noreferrer">GET DIRECTIONS</a>
       </div>
       <div class="map">
@@ -1146,8 +1146,8 @@
         <label>Branch <input type="text" name="branch" placeholder="e.g. CSE, ECE, Mechanical"></label>
         <label>Roll Number <input type="text" name="roll"></label>
         <label class="consent">
-          <input type="checkbox" name="age">
-          I confirm I am 18 or older and I consent to my details and payment proof being shared with the event hosts.
+          <input type="checkbox" name="consent">
+          I consent to my details and payment proof being shared with the event hosts.
         </label>
         <div class="btn-row" style="margin-top:18px">
           <button class="btn ghost" type="button" id="btnBackToTerms">GO BACK</button>
@@ -1190,7 +1190,7 @@
           <li>Paste what you copied, enter <b>₹1300</b>, and complete the payment.</li>
           <li>Come back here, enter the UTR number, and upload the screenshot.</li>
         </ol>
-        <p class="pay-warn">⚠️ <b>Upload only your own fresh screenshot.</b> Reused, duplicate, or edited images are auto-rejected.</p>
+        <p class="pay-warn">⚠️ <b>Upload the "Payment Successful" screen</b> that appears right after you pay — the one that clearly shows the <b>amount (₹1300)</b>, <b>UTR / Transaction ID</b>, <b>payee name</b>, and the word <b>"Successful" / "Completed"</b>. Do <b>not</b> upload the Transaction Details or History page from inside the app — those often hide the amount and are auto-flagged. Reused, duplicate, or edited images are also auto-rejected.</p>
       </details>
 
       <label style="margin-top:18px">Transaction / UTR Number <input type="text" id="utrInput" required placeholder="Auto-filled from screenshot or enter manually"></label>
@@ -1198,7 +1198,7 @@
 
       <div class="upload">
         <strong style="font-size:14px">Upload your payment screenshot</strong>
-        <p class="pay-note" style="font-size:12px;margin:4px 0 8px">UTR number will be auto-extracted from your screenshot</p>
+        <p class="pay-note" style="font-size:12px;margin:4px 0 8px">Upload the <b>"Payment Successful"</b> screen (showing amount, UTR, and payee). UTR is auto-extracted.</p>
         <!-- No `capture` attribute: with it, Android/iOS skip the Camera/Photos/
              Files chooser and launch the camera directly. Removing it brings
              back the normal picker so users can pick an existing screenshot
@@ -1369,7 +1369,7 @@ window.scrollTo(0, 0);
    CONFIG (frozen to prevent tampering via console)
    ═══════════════════════════════════════════════════════ */
 const CONFIG = Object.freeze({
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwyDq7ufnhU11ZmfxX7qqvL7EMjai9DgKD8kjeQhx__VU5xooMBg4eTLBqrWAvIAb0bMg/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzdfriZ1pOu-meR37hwko7p06Nut5k4YJl65rKGnCcgO-sR3W4CTenrgJLWewZcPT3WTw/exec",
   UPI_ID: "9502614934-2@axl",         // Personal UPI ID (manual-pay only)
   PAYEE_NAME: "Amith Vaivasvath Chitturi",
   PAYEE_PHONE: "9502614934",          // Shown + copyable on the pay screen
@@ -1586,7 +1586,7 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
   if (!validateName(f.college)) { showToast("Please enter a valid college name."); return; }
   if (!f.branch || f.branch.trim().length < 1 || f.branch.trim().length > 100) { showToast("Please enter your branch."); return; }
   if (!validateRoll(f.roll)) { showToast("Please enter a valid roll number (alphanumeric, 3-30 characters)."); return; }
-  if (!f.age) { showToast("Please confirm you are 18+ and consent to sharing details."); return; }
+  if (!f.consent) { showToast("Please tick the consent box to share your details with the hosts."); return; }
 
   // Rate limit
   if (!RateLimit("booking", CONFIG.RATE_LIMIT_MAX, CONFIG.RATE_LIMIT_WINDOW)) {
@@ -1978,8 +1978,7 @@ function showReceipt(verified) {
       "Venue: Open Your Mouth, Banjara Hills, Hyderabad\n\n" +
       "► IMPORTANT\n" +
       "• Show this entry (or the receipt email) at the gate.\n" +
-      "• Alcohol strictly prohibited.\n" +
-      "• 18+ only."
+      "• Alcohol strictly prohibited."
     ),
     "LOCATION:" + icsFmt("Open Your Mouth, Road No 12, NBT Nagar, Banjara Hills, Hyderabad, Telangana 500034"),
     "STATUS:CONFIRMED",
@@ -2047,7 +2046,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#000;padding:4
 <div class="event">
 📅 15 November 2026 &nbsp;|&nbsp; 🕐 12:30 PM – 5:30 PM<br>
 📍 Open Your Mouth, Banjara Hills, Hyderabad<br>
-🚫 Alcohol Strictly Prohibited &nbsp;|&nbsp; 🔞 18+ Only
+🚫 Alcohol Strictly Prohibited
 </div>
 <div class="footer">© 2026 Roar 2K26 · NGIT ✕ KMEC · Crafted by Krava Group</div>
 </body></html>`;
