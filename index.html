@@ -1382,7 +1382,7 @@ window.scrollTo(0, 0);
    CONFIG (frozen to prevent tampering via console)
    ═══════════════════════════════════════════════════════ */
 const CONFIG = Object.freeze({
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwRf4aXn0Qx6DlzmWdE8U2Er0T1Dt64CYszwXnUmPaFbi8tuZSE8qofZAGD7eWQRk0Cpw/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxUMgk5mf13HfdkVde-EVi3aa2Q_FRQrtwuB1_qI4yGTuST9SC2OHUSDKBxroldgfJjtQ/exec",
   UPI_ID: "9502614934-2@axl",         // Personal UPI ID (manual-pay only)
   PAYEE_NAME: "Amith Vaivasvath Chitturi",
   PAYEE_PHONE: "9502614934",          // Shown + copyable on the pay screen
@@ -2249,6 +2249,18 @@ function showReceipt(verified) {
   // Outlook/Calendar on desktop) with the event pre-filled — no Google
   // Calendar login required. The user confirms once and the event is
   // saved directly to whichever calendar they chose on first install.
+  // RFC 5545: fold content lines to <=75 UTF-8 octets (CRLF + space).
+  const foldIcsLine = line => {
+    const out = []; let cur = "", bytes = 0;
+    for (const ch of line) {
+      const cp = ch.codePointAt(0);
+      const b = cp <= 0x7f ? 1 : cp <= 0x7ff ? 2 : cp <= 0xffff ? 3 : 4;
+      if (bytes + b > 75) { out.push(cur); cur = " " + ch; bytes = 1 + b; }
+      else { cur += ch; bytes += b; }
+    }
+    out.push(cur);
+    return out.join("\r\n");
+  };
   const icsFmt = s => s.replace(/[\\;,\n]/g, m => ({"\\":"\\\\",";":"\\;",",":"\\,","\n":"\\n"}[m]));
   const nowStamp = new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
   const uid = "roar2k26-" + order.ref + "@kravagroup.co.in";
@@ -2294,7 +2306,7 @@ function showReceipt(verified) {
     "END:VALARM",
     "END:VEVENT",
     "END:VCALENDAR"
-  ].join("\r\n");
+  ].map(foldIcsLine).join("\r\n") + "\r\n";
   const icsBlob = new Blob([icsBody], { type: "text/calendar;charset=utf-8" });
   const icsUrl = URL.createObjectURL(icsBlob);
   const calBtn = document.getElementById("addCalBtn");

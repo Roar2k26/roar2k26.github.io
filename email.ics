@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ROAR2K26//Booking//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:roar2k26-R26MVXN8NFT-KT91@kravagroup.co.in
+DTSTAMP:20261101T094454Z
+DTSTART:20261115T070000Z
+DTEND:20261115T120000Z
+SUMMARY:ROAR2K26 - Freshers' Event
+DESCRIPTION:🎟 ROAR2K26 FRESHERS' EVENT\n\n► YOUR PASS\nReference  : R2
+ 6MVXN8NFT-KT91\nName       : Asha DSouza\, Jr.\nCollege    : NGIT\; Hyd 
+ — CSE\nRoll Number: 22CS001\nAmount     : Rs 1300\nUTR / Txn  : 41234567
+ 8901\nStatus     : Payment Verified\n\n► WHEN & WHERE\nDate : 15 Novembe
+ r 2026\nTime : 12:30 PM – 5:30 PM\nVenue: Open Your Mouth\, Banjara Hill
+ s\, Hyderabad\n\n► IMPORTANT\n• Show this entry (or the receipt email)
+  at the gate.\n• Alcohol strictly prohibited.
+LOCATION:Open Your Mouth\, Road No 12\, NBT Nagar\, Banjara Hills\, Hyderab
+ ad\, Telangana 500034
+STATUS:CONFIRMED
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:ROAR2K26 starts in 1 hour
+END:VALARM
+END:VEVENT
+END:VCALENDAR
