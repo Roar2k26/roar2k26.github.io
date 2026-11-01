@@ -170,6 +170,12 @@
   .music-fab.playing{animation:fabPulse 1.5s ease-in-out infinite;border-color:var(--red);color:var(--red)}
   .music-fab.playing:hover{background:var(--red);color:#fff}
   @keyframes fabPulse{0%,100%{box-shadow:0 0 10px rgba(255,59,78,.2)}50%{box-shadow:0 0 28px rgba(255,59,78,.5)}}
+  .music-fab svg{display:block;width:22px;height:22px;pointer-events:none}
+  .music-fab .ico-play{margin-left:3px}               /* optical centring of the triangle */
+  .music-fab .ico-pause{display:none}
+  .music-fab.playing .ico-play{display:none}
+  .music-fab.playing .ico-pause{display:block}
+  .music-fab:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
   .music-fab .eq{display:flex;align-items:flex-end;gap:2px;height:18px}
   .music-fab .eq span{display:block;width:3px;background:currentColor;border-radius:2px;animation:eqBar .8s ease-in-out infinite alternate}
   .music-fab .eq span:nth-child(1){height:6px;animation-delay:0s}
@@ -193,6 +199,7 @@
   .wrap{max-width:1120px;margin:0 auto;padding:0 18px}
   .hidden{display:none !important}
   .confetti{position:relative}
+  .confetti > .wrap{position:relative;z-index:1}
   .confetti::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.3;
     background-image:radial-gradient(circle,var(--yellow) 1.5px,transparent 2px),radial-gradient(circle,var(--green) 1.5px,transparent 2px),radial-gradient(circle,var(--red) 1.5px,transparent 2px);
     background-size:90px 90px,130px 130px,170px 170px;background-position:0 0,40px 60px,80px 20px}
@@ -231,7 +238,7 @@
       linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.15) 30%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.92) 100%),
       radial-gradient(ellipse at 30% 20%, rgba(61,220,151,.12) 0%, transparent 50%),
       radial-gradient(ellipse at 70% 80%, rgba(255,59,78,.1) 0%, transparent 50%)}
-  .hero .wrap{position:relative;z-index:2}
+  .hero .wrap{position:relative;z-index:2;width:100%}
 
   /* Neon scan line sweeping over the photo */
   .hero-scanline{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
@@ -253,7 +260,7 @@
 
 
   .badge{display:inline-block;background:var(--yellow);color:#000;font-family:Orbitron,sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;padding:6px 14px;border-radius:999px;transform:rotate(-2deg);margin-bottom:18px}
-  .glow-title{font-size:clamp(54px,14vw,132px);color:var(--text);cursor:default;transition:transform .3s;display:inline-block}
+  .glow-title{font-size:clamp(34px,min(14vw,calc((100vw - 32px) / 7.2)),132px);color:var(--text);cursor:default;transition:transform .3s;display:inline-block}
   .glow-title .red{color:var(--red);transition:text-shadow .3s}
   .glow-title .green{color:var(--green);transition:text-shadow .3s}
   .glow-title:hover{transform:scale(1.03);animation:titleglow 1.4s ease-in-out infinite}
@@ -285,11 +292,13 @@
   .countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:760px;margin:0 auto}
   .cd{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 6px;text-align:center}
   .cd b{display:block;font-family:Orbitron,sans-serif;font-size:clamp(28px,8vw,54px);color:var(--green);text-shadow:0 0 14px var(--green-glow)}
-  .cd small{color:var(--muted);text-transform:uppercase;letter-spacing:2px;font-size:11px}
+  .cd small{color:var(--muted);text-transform:uppercase;letter-spacing:2px;font-size:12px}
+  @media(max-width:480px){.cd small{font-size:11.5px;letter-spacing:.6px}}
+  @media(max-width:340px){.cd small{font-size:10.5px;letter-spacing:.3px}}
   .started{display:none;text-align:center;font-family:Orbitron,sans-serif;color:var(--green);font-size:22px;text-shadow:0 0 18px var(--green-glow)}
   .info{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
   .info div{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;text-align:center}
-  .info small{color:var(--muted);text-transform:uppercase;letter-spacing:2px;font-size:11px}
+  .info small{color:var(--muted);text-transform:uppercase;letter-spacing:2px;font-size:12px}
   .info b{display:block;font-family:Orbitron,sans-serif;font-size:clamp(14px,3.8vw,18px);margin-top:6px}
 
   /* HIGHLIGHTS */
@@ -363,6 +372,7 @@
   .pay-note b{color:var(--text)}
   /* Tap-to-copy pay-details row (UPI ID + mobile) */
   .copy-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 4px}
+  @media(max-width:430px){.copy-row{grid-template-columns:1fr}.copy-btn .copy-value{font-size:16px}}
   .copy-btn{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px 14px;border:1px solid var(--green);border-radius:10px;background:#0a1a0f;color:var(--text);font:inherit;cursor:pointer;position:relative;text-align:left;transition:all .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
   .copy-btn:hover,.copy-btn:active{background:#102a1a;box-shadow:0 0 12px rgba(61,220,151,.2)}
   .copy-btn .copy-label{font-size:10px;letter-spacing:1px;color:var(--green);text-transform:uppercase;font-weight:700}
@@ -410,7 +420,7 @@
   .coords a b{font-family:Orbitron,sans-serif;color:var(--green);font-size:15px}
   .coords a span{color:var(--muted);font-size:14px}
 
-  footer{text-align:center;color:var(--muted);font-size:13px;padding:40px 18px 56px}
+  footer{text-align:center;color:var(--muted);font-size:13px;padding:40px 18px 96px}
   footer b{color:var(--text)}
 
   /* RESPONSIVE */
@@ -508,7 +518,7 @@
     .countdown .box span:last-child{font-size:9px;letter-spacing:1.5px}
 
     /* Section headings */
-    .eyebrow{font-size:11px}
+    .eyebrow{font-size:12px;letter-spacing:2px}
     .subtitle{font-size:14px;padding:0 8px}
 
     /* Highlights */
@@ -521,7 +531,7 @@
     .gallery{grid-template-columns:1fr;gap:10px}
     .gallery img{min-height:180px;max-height:260px;object-fit:cover;object-position:center}
     .gallery figure{border-radius:12px}
-    .gallery figcaption{left:8px;bottom:8px;font-size:9px;padding:5px 8px;letter-spacing:1.5px}
+    .gallery figcaption{left:8px;bottom:8px;font-size:10px;padding:5px 8px;letter-spacing:1.5px}
 
     /* Highlights — compact on mobile */
     .highlight{padding:18px 14px}
@@ -585,8 +595,9 @@
     /* Receipt */
     .receipt{padding:16px 12px;border-radius:14px}
     .receipt h3{font-size:15px}
-    .receipt .row{font-size:13px;padding:8px 0;flex-wrap:wrap}
-    .receipt .row span:first-child{font-size:12px;min-width:100px}
+    .receipt .row{font-size:13px;padding:8px 0;flex-wrap:nowrap;align-items:baseline}
+    .receipt .row span:first-child{font-size:12px;flex:0 0 auto;white-space:nowrap;color:#555}
+    .receipt .row span:last-child{flex:1 1 auto;min-width:0}
     .receipt .row span:last-child{font-size:13px}
     .receipt .btn{font-size:12px;padding:12px 16px}
 
@@ -597,7 +608,7 @@
     .coords a span{font-size:12px}
 
     /* Footer */
-    footer{font-size:12px;padding:32px 14px 48px}
+    footer{font-size:12px;padding:32px 14px 88px}
 
     /* Payment timer */
     .pay-timer{padding:8px 10px;font-size:11px;gap:4px;letter-spacing:.5px;flex-wrap:wrap;justify-content:center}
@@ -723,7 +734,7 @@
     .upi-app{padding:8px 4px;font-size:9px;min-height:56px}
     .upi-app svg,.upi-app img,.upi-app .app-icon{width:26px;height:26px}
     .coords{grid-template-columns:1fr}
-    .receipt .row{flex-direction:column;gap:2px}
+    .receipt .row{gap:10px}
     .receipt .row span:first-child{min-width:0}
     .btn{font-size:12px;padding:12px 14px}
     nav .wrap{height:50px}
@@ -742,7 +753,7 @@
     h2{font-size:clamp(18px,6vw,24px)}
     /* Gallery images tighter on tiny phones */
     .gallery img{min-height:150px;max-height:220px}
-    .gallery figcaption{font-size:8px;padding:4px 6px;left:6px;bottom:6px}
+    .gallery figcaption{font-size:10px;padding:4px 6px;left:6px;bottom:6px}
     /* Highlight cards compact */
     .highlight{padding:14px 10px}
     .highlight .icon{font-size:24px}
@@ -813,7 +824,7 @@
   .scroll-popup-price .now{font-size:22px;color:var(--green);text-shadow:0 0 10px var(--green-glow)}
   .scroll-popup-btn{display:inline-block;font-family:Orbitron,sans-serif;font-size:13px;letter-spacing:2px;color:#000;background:var(--green);border:none;padding:14px 36px;border-radius:50px;cursor:pointer;text-decoration:none;transition:transform .15s ease,box-shadow .2s ease}
   .scroll-popup-btn:active{transform:scale(.97)}
-  .scroll-popup-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px;line-height:1}
+  .scroll-popup-close{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;min-width:40px;min-height:40px;padding:4px;line-height:1}
   .scroll-popup-close:hover{color:var(--text)}
 
   .toast{position:fixed;top:0;left:0;right:0;z-index:10000;transform:translateY(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none}
@@ -822,7 +833,7 @@
   .toast.error .toast-inner{background:rgba(255,59,78,.95);border:1px solid rgba(255,59,78,.5)}
   .toast.warn .toast-inner{background:rgba(255,179,71,.95);border:1px solid rgba(255,179,71,.5);color:#000}
   .toast.success .toast-inner{background:rgba(61,220,151,.95);border:1px solid rgba(61,220,151,.5);color:#000}
-  .toast-close{background:none;border:none;color:inherit;font-size:20px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;opacity:.7}
+  .toast-close{background:none;border:none;color:inherit;font-size:20px;cursor:pointer;min-width:36px;min-height:36px;padding:0 4px;line-height:1;flex-shrink:0;opacity:.7}
   .toast-close:hover{opacity:1}
   .toast-msg{flex:1}
   @media(max-width:600px){.toast-inner{font-size:13px;padding:12px 14px;margin:env(safe-area-inset-top,4px) 6px 0;border-radius:0 0 12px 12px}}
@@ -940,13 +951,14 @@
 <div class="scanner" aria-hidden="true"></div>
 
 <!-- MUSIC TOGGLE -->
-<button class="music-fab noprint" id="musicFab" title="Toggle music" aria-label="Toggle background music">
-  <div class="eq"><span></span><span></span><span></span><span></span></div>
+<button class="music-fab noprint" id="musicFab" type="button" title="Play music" aria-label="Play background music" aria-pressed="false">
+  <svg class="ico-play" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M8 5.2v13.6a1 1 0 0 0 1.52.85l11-6.8a1 1 0 0 0 0-1.7l-11-6.8A1 1 0 0 0 8 5.2z" fill="currentColor"/></svg>
+  <svg class="ico-pause" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><rect x="6" y="4.5" width="4.2" height="15" rx="1.2" fill="currentColor"/><rect x="13.8" y="4.5" width="4.2" height="15" rx="1.2" fill="currentColor"/></svg>
 </button>
 
 <nav>
   <div class="wrap">
-    <a class="brand" href="#top" id="top">ROAR<span>2K26</span> <small style="font-size:.45em;color:var(--muted);letter-spacing:2px;margin-left:6px">NGIT ✕ KMEC</small></a>
+    <a class="brand" href="#top" id="top">ROAR<span>2K26</span> <small style="font-size:max(.45em,9px);color:var(--muted);letter-spacing:2px;margin-left:6px">NGIT ✕ KMEC</small></a>
     <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">☰</button>
     <ul id="navList">
       <li><a href="#event">Event</a></li>
@@ -1206,6 +1218,7 @@
         <input type="file" id="shot" accept="image/jpeg,image/png,image/webp">
         <img id="preview" class="hidden" alt="Payment screenshot preview">
       </div>
+      <div id="cfWidget" style="margin-top:12px"></div>
       <div class="btn-row" style="margin-top:18px">
         <button class="btn ghost" type="button" id="btnBackToDetails">GO BACK</button>
         <button class="btn red" type="button" id="submitBtn">SUBMIT PAYMENT SCREENSHOT</button>
@@ -1369,10 +1382,15 @@ window.scrollTo(0, 0);
    CONFIG (frozen to prevent tampering via console)
    ═══════════════════════════════════════════════════════ */
 const CONFIG = Object.freeze({
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzdfriZ1pOu-meR37hwko7p06Nut5k4YJl65rKGnCcgO-sR3W4CTenrgJLWewZcPT3WTw/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwRf4aXn0Qx6DlzmWdE8U2Er0T1Dt64CYszwXnUmPaFbi8tuZSE8qofZAGD7eWQRk0Cpw/exec",
   UPI_ID: "9502614934-2@axl",         // Personal UPI ID (manual-pay only)
   PAYEE_NAME: "Amith Vaivasvath Chitturi",
   PAYEE_PHONE: "9502614934",          // Shown + copyable on the pay screen
+  // Cloudflare Turnstile site key (public). "" = CAPTCHA off. Must be set
+  // together with TURNSTILE_SECRET in Code.gs, never one without the other.
+  TURNSTILE_SITE_KEY: "",
+  // Earliest a submit is accepted after the pay step opens (server enforces the same: MIN_PAY_SECONDS in Code.gs).
+  MIN_PAY_SECONDS: 60,
   // No MERCHANT_MCC / deep links — the pay screen is manual-entry only.
   // The user copies the UPI ID or phone number, pastes it into their own
   // UPI app's "Pay to UPI ID / mobile" screen, and completes payment there.
@@ -1686,6 +1704,7 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
     const btn = document.getElementById(btnId);
     if (!btn) return;
     btn.addEventListener("click", async () => {
+      PaySignals.sig.copyClicks++;
       try {
         await copyToClipboard(text);
         btn.classList.add("copied");
@@ -1709,6 +1728,10 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
   // reflects reality.
   if (order) order.mode = "UPI - Manual";
   showStep("stepPay");
+  PaySignals.reset();
+  PaySignals.unconfirm();
+  PaySignals.beacon(order.ref);   // fire-and-forget; submit re-checks it
+  Captcha.mount();
 
 
   // ── PAYMENT TIMER (10 minutes) ──
@@ -1752,6 +1775,95 @@ document.getElementById("btnContinuePay").addEventListener("click", () => {
   window._payTimerInterval = payTimerInterval;
 });
 
+/* ── Soft anti-fraud signals (sent with the submission; host-review only) ── */
+const PaySignals = (function () {
+  let deviceId = "";
+  try {
+    deviceId = localStorage.getItem("roar_dev") || "";
+    if (!deviceId) {
+      deviceId = "d" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem("roar_dev", deviceId);
+    }
+  } catch (_) {
+    deviceId = "s" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+  }
+  const sig = { copyClicks: 0, fileSelects: 0, submitTries: 0 };
+  let confirmedRef = "";
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  return {
+    deviceId: deviceId,
+    sig: sig,
+    reset: function () { sig.copyClicks = 0; sig.fileSelects = 0; sig.submitTries = 0; },
+    confirmed: function (ref) { return !!ref && confirmedRef === ref; },
+    unconfirm: function () { confirmedRef = ""; },
+    // Tell the server (server clock) that the pay step opened. Retries a few
+    // times with back-off; resolves true once the server has acknowledged.
+    beacon: async function (ref) {
+      const waits = [0, 2000, 5000, 10000];
+      for (let i = 0; i < waits.length; i++) {
+        if (waits[i]) await sleep(waits[i]);
+        try {
+          const resp = await fetch(CONFIG.APPS_SCRIPT_URL, {
+            method: "POST", redirect: "follow", keepalive: true,
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ action: "paystart", ref: ref, deviceId: deviceId })
+          });
+          const j = await resp.json();
+          if (j && j.ok) { confirmedRef = ref; return true; }
+        } catch (_) { /* retry */ }
+      }
+      return false;
+    }
+  };
+})();
+
+/* ── Cloudflare Turnstile (optional; only active when a site key is set) ── */
+const Captcha = (function () {
+  let widgetId = null, token = "", loading = null;
+  const enabled = () => !!CONFIG.TURNSTILE_SITE_KEY;
+  function load() {
+    if (loading) return loading;
+    loading = new Promise((resolve, reject) => {
+      const sc = document.createElement("script");
+      sc.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      sc.async = true; sc.onload = resolve; sc.onerror = reject;
+      document.head.appendChild(sc);
+    });
+    return loading;
+  }
+  async function mount() {
+    if (!enabled()) return;
+    token = "";
+    try {
+      await load();
+      if (widgetId !== null) { window.turnstile.reset(widgetId); return; }
+      widgetId = window.turnstile.render("#cfWidget", {
+        sitekey: CONFIG.TURNSTILE_SITE_KEY,
+        appearance: "interaction-only",
+        callback: t => { token = t; },
+        "expired-callback": () => { token = ""; },
+        "error-callback": () => { token = ""; }
+      });
+    } catch (_) { /* script blocked — submit will explain */ }
+  }
+  function reset() {
+    token = "";
+    try { if (widgetId !== null) window.turnstile.reset(widgetId); } catch (_) {}
+  }
+  // Wait (up to ms) for the invisible check to hand us a token.
+  async function waitToken(ms) {
+    const end = Date.now() + ms;
+    while (!token && Date.now() < end) await new Promise(r => setTimeout(r, 250));
+    return token;
+  }
+  return { enabled, mount, reset, waitToken };
+})();
+// Manual select-and-copy on the pay step also counts as a copy.
+document.addEventListener("copy", function () {
+  const pay = document.getElementById("stepPay");
+  if (pay && !pay.classList.contains("hidden")) PaySignals.sig.copyClicks++;
+});
+
 /* ── Tesseract.js: lazy-load for OCR ── */
 let tesseractLoaded = false;
 function loadTesseract() {
@@ -1791,6 +1903,7 @@ const preview = document.getElementById("preview");
 const ocrStatusEl = document.getElementById("ocrStatus");
 
 shotInput.addEventListener("change", e => {
+  PaySignals.sig.fileSelects++;
   const file = e.target.files[0];
   if (!file) { shotData = null; preview.classList.add("hidden"); ocrStatusEl.style.display = "none"; return; }
 
@@ -1869,6 +1982,7 @@ async function runOCR(imageSrc) {
 
 /* Step 4 -> receipt: upload screenshot + details (secured) */
 document.getElementById("submitBtn").addEventListener("click", async () => {
+  PaySignals.sig.submitTries++;
   // ── VALIDATE UTR ──
   const rawUtr = document.getElementById("utrInput").value.trim();
   const utrVal = sanitizeUTR(rawUtr);
@@ -1896,6 +2010,36 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     return;
   }
 
+  // ── Too early? (the server enforces this too; this just saves a round-trip) ──
+  const sinceOpen = Math.floor((Date.now() - (window._payTimerStart || Date.now())) / 1000);
+  if (sinceOpen < CONFIG.MIN_PAY_SECONDS) {
+    showToast("Please complete the payment in your UPI app first. You can submit in " + (CONFIG.MIN_PAY_SECONDS - sinceOpen) + " more seconds.", "warn");
+    return;
+  }
+
+  // ── PAY-STEP SESSION must be known to the server ──
+  if (!PaySignals.confirmed(order.ref)) {
+    showToast("Connecting to the booking server…", "warn");
+    const okb = await PaySignals.beacon(order.ref);
+    if (!okb) {
+      showToast("Could not reach the booking server. Check your connection and try again.", "warn");
+      return;
+    }
+    showToast("Connection restored — please wait about a minute, then press submit again.", "warn");
+    return;
+  }
+
+  // ── CAPTCHA token (only when Turnstile is configured) ──
+  let cfToken = "";
+  if (Captcha.enabled()) {
+    cfToken = await Captcha.waitToken(8000);
+    if (!cfToken) {
+      showToast("Security check is still running or was blocked. Disable ad-blockers for this page and try again.", "warn");
+      Captcha.mount();
+      return;
+    }
+  }
+
   const btn = document.getElementById("submitBtn");
   btn.disabled = true; btn.textContent = "SUBMITTING...";
   let verified = false;
@@ -1910,7 +2054,10 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
       screenshotName: sanitize(order.ref) + ".jpg",
       uploadTimeSec: uploadTimeSec,
       paymentInitiatedAt: window._payInitiatedISO || new Date().toISOString(),
-      uploadedAt: new Date().toISOString()
+      uploadedAt: new Date().toISOString(),
+      deviceId: PaySignals.deviceId,
+      signals: PaySignals.sig,
+      cfToken: cfToken
     };
 
     const resp = await fetch(CONFIG.APPS_SCRIPT_URL, {
@@ -1920,6 +2067,8 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     });
     try {
       const j = await resp.json();
+      Captcha.reset();                       // Turnstile tokens are single-use
+      if (!j.ok && j.error === "pay_step_missing") PaySignals.unconfirm();
       if (!j.ok && j.error === "duplicate_utr") {
         showToast("Duplicate UTR detected! " + j.message + " Please check your transaction ID and try again.");
         btn.disabled = false; btn.textContent = "SUBMIT PAYMENT SCREENSHOT";
@@ -1933,6 +2082,7 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
       verified = !!j.verified;
     } catch(_){}
   } catch (err) {
+    Captcha.reset();
     // Network / fetch failure — the button must be re-enabled or the user
     // is stranded with no way to retry. Toast the problem, re-enable, and
     // bail out without showing a false receipt.
@@ -1950,6 +2100,122 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
   showReceipt(verified);
 });
 
+/* ═══════════════════════════════════════════════════════
+   LIVE STATUS POLLING — receipt page watches the sheet
+   ───────────────────────────────────────────────────────
+   Every N seconds, fetch GET <APPS_SCRIPT_URL>?ref=<ref>.
+   Server returns the current Status from the Passes sheet.
+   When a host flips the row from pending → approved/rejected,
+   this bumper updates the receipt page in-place — no refresh.
+   ═══════════════════════════════════════════════════════ */
+function startStatusPolling(ref, statusEl, initiallyVerified) {
+  // Clear any previous polling loop
+  if (window._statusPollTimer) { clearTimeout(window._statusPollTimer); window._statusPollTimer = null; }
+  if (!ref || !statusEl) return;
+  if (initiallyVerified) return;        // auto-approved → nothing more to watch
+
+  const started = Date.now();
+  const MAX_DURATION_MS = 10 * 60 * 1000;         // 10 minutes
+  let pollCount = 0;
+
+  function nextDelay() {
+    // Back-off schedule: first 3 polls at 15s, next 3 at 30s, then 60s.
+    if (pollCount <= 3) return 15000;
+    if (pollCount <= 6) return 30000;
+    return 60000;
+  }
+
+  async function poll() {
+    pollCount++;
+    if (Date.now() - started > MAX_DURATION_MS) return;   // give up quietly
+    try {
+      const resp = await fetch(CONFIG.APPS_SCRIPT_URL + "?ref=" + encodeURIComponent(ref), {
+        method: "GET", redirect: "follow"
+      });
+      const j = await resp.json();
+      if (j && j.ok && j.state) {
+        applyServerStatus(statusEl, j);
+        if (j.final) return;             // terminal verdict → stop
+      }
+    } catch (_) { /* network blip — just try again on next tick */ }
+    window._statusPollTimer = setTimeout(poll, nextDelay());
+  }
+
+  // First poll after 15s — gives the server a moment to settle the row
+  window._statusPollTimer = setTimeout(poll, nextDelay());
+}
+
+function applyServerStatus(statusEl, j) {
+  // The server returns only a coarse state, never host-only notes or flags.
+  const st = String(j.state || "");
+  if (st === "rejected") {
+    statusEl.textContent = "❌ Rejected by host — check your email for details";
+    statusEl.style.color = "var(--red)";
+    order.verified = false;
+  } else if (j.verified || st === "approved") {
+    statusEl.textContent = "✅ Approved — your pass is confirmed";
+    statusEl.style.color = "var(--green)";
+    order.verified = true;
+  } else if (st === "needs_info") {
+    statusEl.textContent = "⏳ Under host review — check your email for next steps";
+    statusEl.style.color = "var(--yellow)";
+  }
+}
+function startStatusPolling(ref, statusEl, initiallyVerified) {
+  // Clear any previous polling loop
+  if (window._statusPollTimer) { clearTimeout(window._statusPollTimer); window._statusPollTimer = null; }
+  if (!ref || !statusEl) return;
+  if (initiallyVerified) return;        // auto-approved → nothing more to watch
+
+  const started = Date.now();
+  const MAX_DURATION_MS = 10 * 60 * 1000;         // 10 minutes
+  let pollCount = 0;
+
+  function nextDelay() {
+    // Back-off schedule: first 3 polls at 15s, next 3 at 30s, then 60s.
+    if (pollCount <= 3) return 15000;
+    if (pollCount <= 6) return 30000;
+    return 60000;
+  }
+
+  async function poll() {
+    pollCount++;
+    if (Date.now() - started > MAX_DURATION_MS) return;   // give up quietly
+    try {
+      const resp = await fetch(CONFIG.APPS_SCRIPT_URL + "?ref=" + encodeURIComponent(ref), {
+        method: "GET", redirect: "follow"
+      });
+      const j = await resp.json();
+      if (j && j.ok && j.state) {
+        applyServerStatus(statusEl, j);
+        if (j.final) return;             // terminal verdict → stop
+      }
+    } catch (_) { /* network blip — just try again on next tick */ }
+    window._statusPollTimer = setTimeout(poll, nextDelay());
+  }
+
+  // First poll after 15s — gives the server a moment to settle the row
+  window._statusPollTimer = setTimeout(poll, nextDelay());
+}
+
+function applyServerStatus(statusEl, j) {
+  const s = String(j.status || "");
+  const low = s.toLowerCase();
+  // Priority: rejected > approved > flagged/review > auto-verified
+  if (/\brejected?\b|\binvalid\b|\bfraud/.test(low) || s.indexOf("❌") !== -1) {
+    statusEl.textContent = "❌ Rejected by host — check your email for details";
+    statusEl.style.color = "var(--red)";
+    order.verified = false;
+  } else if (j.verified || /\bapprove(d)?\b|\bverified\b|\bconfirm(ed)?\b/.test(low) || s.indexOf("✅") !== -1) {
+    statusEl.textContent = "✅ Approved — your pass is confirmed";
+    statusEl.style.color = "var(--green)";
+    order.verified = true;
+  } else if (/\bflag|\breview|\bclarif|\binfo\b/.test(low) || s.indexOf("⚠️") !== -1 || s.indexOf("🔄") !== -1) {
+    statusEl.textContent = "⏳ Under host review — check your email for next steps";
+    statusEl.style.color = "var(--yellow)";
+  }
+}
+
 function showReceipt(verified) {
   const set = (id, v) => document.getElementById(id).textContent = v;
   set("r-ref", order.ref); set("r-name", order.name); set("r-email", order.email);
@@ -1965,11 +2231,18 @@ function showReceipt(verified) {
       statusEl.textContent = "✅ Auto-Approved";
       statusEl.style.color = "var(--green)";
     } else {
-      statusEl.textContent = "❌ Not Verified — Contact hosts if payment was made";
-      statusEl.style.color = "var(--red)";
+      statusEl.textContent = "⏳ Awaiting host review — this page updates live";
+      statusEl.style.color = "var(--yellow)";
     }
   }
   order.verified = verified;
+
+  // ── LIVE STATUS POLLING ──
+  // Fetches the latest status from the sheet so if a host updates it, the
+  // receipt page updates without the buyer refreshing. Backs off from
+  // 15s → 30s → 60s, caps at 10 minutes total, stops immediately on a
+  // terminal verdict (approved or rejected).
+  startStatusPolling(order.ref, statusEl, verified);
 
   // Build an .ics file so the button opens the DEVICE's native calendar
   // (Apple Calendar on iOS, Google/Samsung/Outlook Calendar on Android,
@@ -2212,7 +2485,11 @@ function updateFab() {
   const fab = document.getElementById("musicFab");
   if (!fab) return;
   // "playing" state visually = audible playing
-  fab.classList.toggle("playing", musicPlaying && musicAudible);
+  const on = !!(musicPlaying && musicAudible);
+  fab.classList.toggle("playing", on);
+  fab.setAttribute("aria-pressed", on ? "true" : "false");
+  fab.setAttribute("aria-label", on ? "Pause background music" : "Play background music");
+  fab.title = on ? "Pause music" : "Play music";
 }
 
 /* ── MUSIC FAB TOGGLE ── */
